@@ -5,6 +5,10 @@ contract Bank {
     mapping(address => uint256) public balance;
     uint256 cashPool;
     
+    function getBalance(address client) public view returns(uint256){
+        return (balance[client]);
+    }
+
     function deposit() public payable {
         require(msg.value > 0);
         

@@ -25,4 +25,8 @@ contract NFTY is ERC721URIStorage {
 
         return newItemId;
     }
+
+    function getCount() view public returns (uint256) {
+        return _tokenIds.current();
+    }
 }

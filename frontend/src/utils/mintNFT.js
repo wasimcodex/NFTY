@@ -22,14 +22,16 @@ export const mintNFT = async (imgFile, name, description) => {
   } else {
     const fileUri = pinFileResponse.pinataUrl
 
-    const metadata = new Object()
+    console.log('File URI: ' + fileUri)
+
+    const metadata = {}
 
     const pinataContent = {}
     pinataContent.name = name
     pinataContent.image = fileUri
     pinataContent.description = description
 
-    const pinataMetadata = new Object()
+    const pinataMetadata = {}
     pinataMetadata.name = name + '.json'
 
     metadata.pinataMetadata = pinataMetadata
@@ -65,7 +67,7 @@ export const mintNFT = async (imgFile, name, description) => {
       return {
         success: true,
         status:
-          'check out you transaction on Etherscan: https://ropsten.etherscan.io/tx/' +
+          'check out you transaction on Etherscan: https://rinkeby.etherscan.io/tx/' +
           txHash,
       }
     } catch (err) {

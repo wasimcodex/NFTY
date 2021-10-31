@@ -428,8 +428,8 @@
       ]
     },
     "C:\\Users\\wasim\\Desktop\\Code\\NFTY\\contracts\\Bank.sol": {
-      "lastModificationDate": 1635365102807,
-      "contentHash": "c9b806df5c0d4681f59286d67a48eac9",
+      "lastModificationDate": 1635688796329,
+      "contentHash": "75363597b9104d4940023a5ec59c0124",
       "sourceName": "contracts/Bank.sol",
       "solcConfig": {
         "version": "0.8.0",
@@ -462,8 +462,8 @@
       ]
     },
     "C:\\Users\\wasim\\Desktop\\Code\\NFTY\\contracts\\NFTY.sol": {
-      "lastModificationDate": 1635453592555,
-      "contentHash": "cf539cff9dd69d56f0909a37370d4d13",
+      "lastModificationDate": 1635668579058,
+      "contentHash": "0915d1e75a8acc600b4c444c548c5090",
       "sourceName": "contracts/NFTY.sol",
       "solcConfig": {
         "version": "0.8.0",

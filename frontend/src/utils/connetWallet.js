@@ -53,26 +53,3 @@ export const getCurrentWalletConnected = async () => {
     }
   }
 }
-
-export const walletListener = () => {
-  if (window.ethereum) {
-    window.ethereum.on('accountsChanged', (accounts) => {
-      if (accounts.length > 0) {
-        return {
-          address: accounts[0],
-          status: '',
-        }
-      } else {
-        return {
-          address: '',
-          status: 'Click on the connect button to connect to metamask wallet.',
-        }
-      }
-    })
-  } else {
-    return {
-      address: '',
-      status: 'You must install Metamask, in your browser.',
-    }
-  }
-}
