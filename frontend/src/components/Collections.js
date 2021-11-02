@@ -6,11 +6,11 @@ const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
 const { createAlchemyWeb3 } = require('@alch/alchemy-web3')
 const web3 = createAlchemyWeb3(alchemyKey)
 
-const contractABI = require('../contracts/NFTY.json')
+const { abi } = require('../contracts/NFTY.json')
 const { nftAddress } = require('../contracts/nft-contract-address.json')
 
 const getCollections = async () => {
-  window.contract = await new web3.eth.Contract(contractABI, nftAddress)
+  window.contract = await new web3.eth.Contract(abi, nftAddress)
   const transactionParameters = {
     to: nftAddress,
     from: window.ethereum.selectedAddress,

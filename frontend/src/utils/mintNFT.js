@@ -3,7 +3,7 @@ const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
 const { createAlchemyWeb3 } = require('@alch/alchemy-web3')
 const web3 = createAlchemyWeb3(alchemyKey)
 
-const contractABI = require('../contracts/NFTY.json')
+const { abi } = require('../contracts/NFTY.json')
 const { nftAddress } = require('../contracts/nft-contract-address.json')
 
 export const mintNFT = async (imgFile, name, description) => {
@@ -49,7 +49,7 @@ export const mintNFT = async (imgFile, name, description) => {
 
     console.log(JsonUri)
 
-    window.contract = await new web3.eth.Contract(contractABI, nftAddress)
+    window.contract = await new web3.eth.Contract(abi, nftAddress)
 
     const transactionParameters = {
       to: nftAddress,
@@ -64,17 +64,26 @@ export const mintNFT = async (imgFile, name, description) => {
         method: 'eth_sendTransaction',
         params: [transactionParameters],
       })
-      return {
-        success: true,
-        status:
-          'check out you transaction on Etherscan: https://rinkeby.etherscan.io/tx/' +
-          txHash,
-      }
+      return (
+        <>
+          <p>
+            {'check out you transaction on Etherscan: '}
+            <a
+              href={'https://rinkeby.etherscan.io/tx/' + txHash}
+              target={'_blank'}
+            >
+              {' '}
+              Here{' '}
+            </a>
+          </p>
+        </>
+      )
     } catch (err) {
-      return {
-        success: false,
-        status: 'Something went wrong: ' + err.message,
-      }
+      return (
+        <>
+          <p>{'Something went wrong : ' + err.message}</p>
+        </>
+      )
     }
   }
 }

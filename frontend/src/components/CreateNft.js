@@ -29,7 +29,7 @@ export default function CreateNft() {
     console.log(ImgData)
     const response = await mintNFT(ImgData, Name, Description)
     console.log(response)
-    setStatus(response.status)
+    setStatus(response)
   }
 
   return (
