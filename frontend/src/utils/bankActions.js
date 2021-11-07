@@ -7,7 +7,7 @@ const { address } = require('../contracts/bank-contract-address.json')
 
 export const depositEth = async (amount) => {
   console.log(amount)
-  if (parseInt(amount) <= 0) {
+  if (parseFloat(amount) <= 0) {
     return {
       success: false,
       status: 'Input valid amount',
@@ -16,7 +16,7 @@ export const depositEth = async (amount) => {
 
   window.contract = await new web3.eth.Contract(abi, address)
 
-  const WeiAmount = parseInt(web3.utils.toWei(amount, 'ether'))
+  const WeiAmount = parseInt(parseFloat(amount) * 1000000000000000000)
 
   const pay = web3.utils.toHex(WeiAmount)
 
@@ -49,7 +49,8 @@ export const depositEth = async (amount) => {
 export const withdrawETH = async (amount) => {
   window.contract = await new web3.eth.Contract(abi, address)
 
-  const Wei = web3.utils.toWei(amount)
+  const Wei = parseInt(parseFloat(amount) * 1000000000000000000).toString()
+  console.log(amount, Wei)
 
   const txParameters = {
     to: address,
@@ -117,4 +118,15 @@ export const checkPool = async () => {
   } catch (err) {
     return err.message
   }
+}
+
+export const currentExh = async () => {
+  var EXH = ''
+  await fetch('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=INR')
+    .then((response) => response.json())
+    .then((res) => {
+      console.log(res)
+      EXH = res['INR']
+    })
+  return EXH
 }

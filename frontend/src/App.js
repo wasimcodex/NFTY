@@ -4,6 +4,7 @@ import CreateNft from './components/CreateNft'
 import Collections from './components/Collections'
 import CustomNav from './components/Nav'
 import Bank from './components/Bank'
+import { NewBank } from './components/NewBank'
 
 function App() {
   return (
@@ -17,7 +18,7 @@ function App() {
           <Collections />
         </Route>
         <Route path="/bank">
-          <Bank />
+          <NewBank />
         </Route>
       </Router>
     </div>
