@@ -34,12 +34,12 @@ export default function CreateNft() {
 
   return (
     <div>
-      <Form style={{ padding: '10px', marginTop: '20px' }}>
+      <Form style={{ padding: '15px', marginTop: '20px' }}>
         <Row xs={1} md={2}>
-          <Col style={{ textAlign: 'center', padding: '10', margin: '10' }}>
+          <Col style={{ textAlign: 'center' }}>
             <Image
               src={imgUri ? imgUri : imgplaceholder}
-              style={{ maxHeight: '400px' }}
+              style={{ maxHeight: '300px' }}
               fluid
             ></Image>
             <Form.Group controlId="formFile" className="mb-3 pt-3">
