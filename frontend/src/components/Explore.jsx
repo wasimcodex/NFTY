@@ -3,7 +3,6 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import ConnetBtn from './ConnectBtn'
 import NftCards from './NftCards'
 
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
@@ -14,7 +13,7 @@ const { abi } = require('../contracts/NFTY.json')
 const { nftAddress } = require('../contracts/nft-contract-address.json')
 
 //Gets NFT collections details (id, name, description, owner)
-const getCollections = async () => {
+const getNFTs = async () => {
   window.contract = await new web3.eth.Contract(abi, nftAddress)
   const transactionParameters = {
     to: nftAddress,
@@ -83,11 +82,11 @@ const getCollections = async () => {
   }
 }
 
-export default function Collections() {
+export default function Explore() {
   const [NFTs, setNFTs] = useState([])
   useEffect(() => {
     async function getNfts() {
-      const NFTArray = await getCollections()
+      const NFTArray = await getNFTs()
       setNFTs(NFTArray)
       console.log(NFTs)
     }

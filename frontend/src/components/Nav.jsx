@@ -14,8 +14,8 @@ export default function CustomNav() {
             </Link>
           </Nav.Item>
           <Nav.Item>
-            <Link className="nav-link" to="/collections">
-              Collections
+            <Link className="nav-link" to="/explore">
+              Explore
             </Link>
           </Nav.Item>
           <Nav.Item>
