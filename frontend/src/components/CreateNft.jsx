@@ -34,7 +34,6 @@ export default function CreateNft() {
 
   return (
     <div>
-      <ConnectBtn setStatus={setStatus} />
       <Form style={{ padding: '10px', marginTop: '20px' }}>
         <Row xs={1} md={2}>
           <Col style={{ textAlign: 'center', padding: '10', margin: '10' }}>

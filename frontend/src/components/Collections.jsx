@@ -1,3 +1,7 @@
+/**
+ * NFT Collections page component
+ */
+
 import React, { useEffect, useState } from 'react'
 import ConnetBtn from './ConnectBtn'
 import NftCards from './NftCards'
@@ -9,6 +13,7 @@ const web3 = createAlchemyWeb3(alchemyKey)
 const { abi } = require('../contracts/NFTY.json')
 const { nftAddress } = require('../contracts/nft-contract-address.json')
 
+//Gets NFT collections details (id, name, description, owner)
 const getCollections = async () => {
   window.contract = await new web3.eth.Contract(abi, nftAddress)
   const transactionParameters = {
@@ -20,13 +25,14 @@ const getCollections = async () => {
   try {
     const res = await window.ethereum.request({
       method: 'eth_call',
-      params: [transactionParameters],
+      params: [transactionParameters, 'latest'],
     })
 
     const count = parseInt(res, 16)
     console.log('count : ' + count)
 
     const urls = []
+    const owners = []
     for (let i = 1; i <= count; i++) {
       const txParameters = {
         to: nftAddress,
@@ -34,14 +40,29 @@ const getCollections = async () => {
         data: window.contract.methods.tokenURI(i).encodeABI(),
       }
 
+      const OwnParameters = {
+        to: nftAddress,
+        from: window.ethereum.selectedAddress,
+        data: window.contract.methods.ownerOf(i).encodeABI(),
+      }
+
       const response = await window.ethereum.request({
         method: 'eth_call',
-        params: [txParameters],
+        params: [txParameters, 'latest'],
       })
       let url = web3.utils.hexToAscii(response)
       urls.push(url.trim().substring(64, 144))
+
+      const OwnResponse = await window.ethereum.request({
+        method: 'eth_call',
+        params: [OwnParameters, 'latest'],
+      })
+
+      let OwnerAdd = web3.utils.hexToAscii(OwnResponse)
+      owners.push(OwnerAdd)
     }
     console.log(urls)
+    console.log(owners)
 
     const data = []
     for (let i = 0; i < urls.length; i++) {
@@ -76,7 +97,6 @@ export default function Collections() {
   const [Status, setStatus] = useState('')
   return (
     <div>
-      <ConnetBtn setStatus={setStatus} />
       <NftCards NFTArray={NFTs} />
     </div>
   )

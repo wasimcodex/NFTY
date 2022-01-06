@@ -1,33 +1,36 @@
 const { ethers, artifacts } = require('hardhat')
 
 async function main() {
-  const Bank = await ethers.getContractFactory('Bank')
+  const [deployer] = await ethers.getSigners()
 
+  console.log('Deploying Bank contract with account:', deployer.address)
+
+  const Bank = await ethers.getContractFactory('Bank')
   const bank = await Bank.deploy()
+
   console.log('Contract Bank deployed at address: ', bank.address)
 
-  saveFrontendFiles(bank)
+  saveArtifacts(bank)
 }
 
-saveFrontendFiles = (token) => {
+const saveArtifacts = (bank) => {
   const fs = require('fs')
-  const contractDir = __dirname + '/../frontend/src/contracts'
+  const contractDir = __dirname + '/../frontend/src/artifacts'
 
   if (!fs.existsSync(contractDir)) {
     fs.mkdirSync(contractDir)
   }
 
-  fs.writeFileSync(
-    contractDir + '/bank-contract-address.json',
-    JSON.stringify({ address: token.address }, undefined, 2),
-  )
+  const bankArtifact = artifacts.readArtifactSync('Bank')
 
-  const BankArtifact = artifacts.readArtifactSync('Bank')
+  const artifact = {
+    address: bank.address,
+    abi: bankArtifact.abi,
+  }
 
-  fs.writeFileSync(
-    contractDir + '/Bank.json',
-    JSON.stringify(BankArtifact, null, 2),
-  )
+  console.log('Saving artifacts to:', contractDir)
+
+  fs.writeFileSync(contractDir + '/bank.json', JSON.stringify(artifact))
 }
 
 main()

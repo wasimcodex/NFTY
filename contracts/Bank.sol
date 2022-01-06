@@ -2,11 +2,12 @@
 pragma solidity ^0.8.0;
 
 contract Bank {
+    //Mapping of user address to balance
     mapping(address => uint256) public balance;
-    uint256 cashPool;
     
-    function getBalance(address client) public view returns(uint256){
-        return (balance[client]);
+    // get the balance of a user
+    function getBalance() public view returns(uint256){
+        return (balance[msg.sender]);
     }
 
     function deposit() public payable {
@@ -19,13 +20,20 @@ contract Bank {
         }
     }
     
-    function withdraw(uint256 amount, address payable client) public payable {
+    function withdraw(uint256 amount) public payable {
+        address payable client = payable(msg.sender);
         require(balance[msg.sender] >= amount);
         client.transfer(amount);
         balance[msg.sender] = balance[msg.sender] - amount;
     }
-    
-    function getCashPool() public view returns(uint256){
-        return address(this).balance;
+
+    function transfer(address payable beneficiary, uint256 amount) public {
+        require(balance[msg.sender] >= amount);
+        balance[msg.sender] = balance[msg.sender] - amount;
+        if (balance[beneficiary] > 0){
+            balance[beneficiary] = balance[beneficiary] + amount;
+        }else{
+            balance[beneficiary] = amount;
+        }
     }
 }

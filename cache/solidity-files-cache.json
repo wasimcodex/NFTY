@@ -428,8 +428,8 @@
       ]
     },
     "C:\\Users\\wasim\\Desktop\\Code\\NFTY\\contracts\\Bank.sol": {
-      "lastModificationDate": 1635688796329,
-      "contentHash": "75363597b9104d4940023a5ec59c0124",
+      "lastModificationDate": 1641471844777,
+      "contentHash": "260372566de1edc7efb2e3b2bbdea594",
       "sourceName": "contracts/Bank.sol",
       "solcConfig": {
         "version": "0.8.0",

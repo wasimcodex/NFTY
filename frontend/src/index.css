@@ -12,19 +12,81 @@ code {
     monospace;
 }
 
-.connect-btn {
-  padding-top: 10px;
+.amount-input {
+  margin: 10px;
 }
 
-#walletButton {
+.address-input {
+  margin: 10px;
+}
+
+.balance-card {
+  margin-top: 20px;
   text-align: center;
-  background-color: aliceblue;
-  border-radius: 5px;
-  border-color: cyan;
-  padding: 5px;
 }
 
-#status {
-  padding: 10px;
-  color: red;
+.balance-eth {
+  color: rgb(19, 202, 28);
+}
+
+.balance-inr {
+  color: rgb(25, 214, 214);
+}
+
+.btn-grp {
+  margin: 20px;
+}
+
+.deposit-btn,
+.action-btn {
+  margin-right: 20px;
+}
+
+.footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 5px;
+  background-color: teal;
+  color: white;
+  text-align: center;
+}
+
+.footer-text {
+  font-size: large;
+}
+
+.info-icon {
+  font-size: x-large;
+}
+
+.withdraw-btn,
+.close-btn {
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.transfer-btn {
+  margin-left: 20px;
+}
+
+.connect-btn {
+  text-align: center;
+  margin: 20px;
+}
+
+.refresh-icon {
+  margin-left: 10px;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.status-box {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.status-box-null {
+  display: none;
 }
