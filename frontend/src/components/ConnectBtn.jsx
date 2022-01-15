@@ -39,7 +39,7 @@ export const ConnectBtn = ({ setStatus, setConnected, setWallet }) => {
     <div className="connect-btn">
       <Button variant="primary" onClick={handleConnect}>
         {walletAddress.length === 0
-          ? 'Connet Wallet'
+          ? 'Connect Wallet'
           : 'Connected: ' +
             String(walletAddress).substring(0, 6) +
             '...' +
