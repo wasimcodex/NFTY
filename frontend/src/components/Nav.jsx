@@ -23,11 +23,6 @@ export default function CustomNav() {
               Bank
             </Link>
           </Nav.Item>
-          <Nav.Item>
-            <Link className="nav-link" to="/mynfts">
-              My NFTs
-            </Link>
-          </Nav.Item>
         </Nav>
       </Container>
     </Navbar>

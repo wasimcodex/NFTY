@@ -30,7 +30,7 @@ function App() {
         <Route path="/bank">
           <BankInfo onAccoutChange={wallet} />
         </Route>
-        <Route path="/mynfts">
+        <Route path="/nft/:contractAddress/:tokenId/">
           <NFTDescription />
         </Route>
       </Router>
