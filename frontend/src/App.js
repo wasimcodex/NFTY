@@ -6,6 +6,7 @@ import Explore from './components/Explore'
 import CustomNav from './components/Nav'
 import BankInfo from './components/BankInfo'
 import ConnectBtn from './components/ConnectBtn'
+import NFTDescription from './components/NFTDescription'
 
 function App() {
   const [status, setStatus] = useState('')
@@ -28,6 +29,9 @@ function App() {
         </Route>
         <Route path="/bank">
           <BankInfo onAccoutChange={wallet} />
+        </Route>
+        <Route path="/mynfts">
+          <NFTDescription />
         </Route>
       </Router>
     </div>
