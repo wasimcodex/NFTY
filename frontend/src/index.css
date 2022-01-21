@@ -94,3 +94,185 @@ code {
 .status-box-null {
   display: none;
 }
+
+.itemHeader {
+  display: flex;
+  flex-flow: column wrap;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+}
+
+.itemCollectionInfo {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  max-width: 100%;
+}
+
+.itemCollectionDetail {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  max-width: 100%;
+  width: 420px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.collectionLink {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  font-size: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgb(32, 129, 226);
+  text-decoration: none;
+}
+
+.itemCollectionToolbarWrapper {
+  max-width: fit-content;
+}
+
+.buttonGrp {
+  width: fit-content;
+  /* display: flex; */
+  display: inline-flex;
+  flex-direction: row;
+  -webkit-box-align: center;
+  align-items: center;
+  border-radius: 10px;
+  -webkit-box-pack: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 10px;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid rgb(229, 232, 235);
+  color: rgb(112, 122, 131);
+}
+
+.itemTitle{
+  font-size: 30px;
+  font-weight: 600;
+  max-width: 100%;
+  margin: 0px;
+  width: 588px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: normal;
+}
+
+.itemCounts {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+  color: rgb(112, 122, 131);
+}
+
+.itemOwnerText {
+  display: inline-flex;
+  -webkit-box-align: center;
+  align-items: center;
+  height: 24px;
+  width: 100%;
+}
+
+.itemOwner {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  color: rgb(32, 129, 226);
+  text-decoration: none;
+  font-weight: inherit;
+}
+
+.itemFrame {
+  margin: 4px 0px;
+}
+
+.basePanel {
+  border-radius: 10px;
+  border-right: 1px solid rgb(229, 232, 235);
+  border-bottom: 1px solid rgb(229, 232, 235);
+  border-left: 1px solid rgb(229, 232, 235);
+  border-top: 1px solid rgb(229, 232, 235);
+  border-image: initial;
+  color: rgb(4, 17, 29);
+  background-color: rgb(255, 255, 255);
+  overflow: hidden;
+}
+
+.basePanelHeader {
+  width: 100%;
+  -webkit-box-align: center;
+  align-items: center;
+  border-radius: 10px;
+  border-top: 1px solid rgb(229, 232, 235);
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 20px;
+  user-select: none;
+  background-color: rgb(255, 255, 255);
+  border: 0px;
+}
+
+.basePanelBody {
+  border-top: 1px solid rgb(229, 232, 235);
+  color: rgb(53, 56, 64);
+  background-color: rgb(251, 253, 255);
+}
+
+.panelContent {
+  padding: 20px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.priceHistoryGraph {
+  height: initial;
+  margin-bottom: 16px;
+  -webkit-box-align: center;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  /* height: 300px; */
+  -webkit-box-pack: center;
+  justify-content: center;
+  user-select: none;
+  max-height: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  position: relative;
+  border-radius: 10px;
+}
+
+.noOrdersText {
+  display: flex;
+  font-size: 16px;
+  margin-top: 4px;
+  -webkit-box-pack: center;
+  justify-content: center;
+}
+
+@media (min-width: 1024px){
+  .itemHeader {
+    margin: 20px 20px 15px;
+  }
+  .itemTitle {
+    width: 710px;
+  }
+  .itemCounts {
+    margin: 20px;
+  }
+  .itemFrame {
+    margin: 20px;
+  }
+}
