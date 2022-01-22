@@ -22,7 +22,7 @@ const NftCards = ({ nft }) => {
                   <span style={{ color: 'magenta' }}>{'#' + nft.token_id}</span>
                 </Card.Title>
                 <Card.Text style={{ fontSize: '16px', color: 'grey' }}>
-                  {nft.description}
+                  {nft.description.slice(0, 100) + '...'}
                 </Card.Text>
               </Col>
               <Col style={{ textAlign: 'right', fontSize: '16px' }}>
