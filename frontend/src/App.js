@@ -7,6 +7,7 @@ import CustomNav from './components/Nav'
 import BankInfo from './components/BankInfo'
 import ConnectBtn from './components/ConnectBtn'
 import NFTDescription from './components/NFTDescription'
+import Transfer from './components/Transfer'
 
 function App() {
   const [status, setStatus] = useState('')
@@ -30,8 +31,11 @@ function App() {
         <Route path="/bank">
           <BankInfo onAccoutChange={wallet} />
         </Route>
-        <Route path="/nft/:contractAddress/:tokenId/">
+        <Route path="/nft/:contractAddress/:tokenId/" exact>
           <NFTDescription wallet={wallet} />
+        </Route>
+        <Route path="/nft/transfer/:contractAddress/:tokenId/" exact>
+          <Transfer />
         </Route>
       </Router>
     </div>
