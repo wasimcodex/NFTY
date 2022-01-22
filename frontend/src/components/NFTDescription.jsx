@@ -61,14 +61,13 @@ function NFTDescription({ wallet }) {
   return (
     <div>
       <Container>
-        <div style={{ justifyContent: 'center', display: 'flex' }}>
-          <span style={{ padding: '1%' }}>
-            <Button variant="outline-primary" size="lg">
-              Edit
-            </Button>
-          </span>
-          <span style={{ padding: '1%' }}>
-            <Button variant="primary" size="lg">
+        <div style={{ justifyContent: 'flex-end', display: 'flex' }}>
+          <span style={{ marginRight: '20px' }}>
+            <Button
+              variant="primary"
+              size="lg"
+              style={{ paddingInline: '20px' }}
+            >
               Sell
             </Button>
           </span>
