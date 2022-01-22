@@ -16,8 +16,7 @@ function App() {
   return (
     <div>
       <Router>
-        <CustomNav />
-        <ConnectBtn
+        <CustomNav
           setStatus={setStatus}
           setConnected={setConnected}
           setWallet={setWallet}

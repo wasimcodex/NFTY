@@ -1,8 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Navbar, Container, Nav } from 'react-bootstrap'
+import { Navbar, Container, Nav, Image } from 'react-bootstrap'
 
-export default function CustomNav() {
+import ConnectBtn from './ConnectBtn'
+
+export default function CustomNav({ setStatus, setConnected, setWallet }) {
   return (
     <Navbar bg="dark" variant="dark">
       <Container>
@@ -21,6 +23,15 @@ export default function CustomNav() {
           <Nav.Item>
             <Link className="nav-link" to="/bank">
               Bank
+            </Link>
+          </Nav.Item>
+          <Nav.Item>
+            <Link className="nav-link" to="/profile">
+              <ConnectBtn
+                setStatus={setStatus}
+                setConnected={setConnected}
+                setWallet={setWallet}
+              />
             </Link>
           </Nav.Item>
         </Nav>

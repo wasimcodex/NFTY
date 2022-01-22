@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Button } from 'react-bootstrap'
+import { Button, Image } from 'react-bootstrap'
 
 import { connectWallet, getWalletStatus } from '../utils/walletFunctions'
+
+import connectedArt from '../assets/connected-art.jpg'
+import notConnetedArt from '../assets/not-connected.png'
 
 export const ConnectBtn = ({ setStatus, setConnected, setWallet }) => {
   const [walletAddress, setWalletAddress] = useState('')
@@ -36,16 +39,17 @@ export const ConnectBtn = ({ setStatus, setConnected, setWallet }) => {
   }, [setConnected, setStatus, setWallet])
 
   return (
-    <div className="connect-btn">
-      <Button variant="primary" onClick={handleConnect}>
-        {walletAddress.length === 0
-          ? 'Connect Wallet'
-          : 'Connected: ' +
-            String(walletAddress).substring(0, 6) +
-            '...' +
-            String(walletAddress).substring(38)}
-      </Button>
-    </div>
+    <Image
+      src={walletAddress.length === 0 ? notConnetedArt : connectedArt}
+      roundedCircle
+      style={{
+        border: '1px solid',
+        borderColor: 'white',
+        backgroundColor: 'white',
+        height: '25px',
+        width: '25px',
+      }}
+    />
   )
 }
 
