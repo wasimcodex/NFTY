@@ -38,7 +38,7 @@ const getNftData = async (contractAddress, tokenId) => {
   return data
 }
 
-function NFTDescription({ nft }) {
+function NFTDescription({ wallet }) {
   let { contractAddress, tokenId } = useParams()
   const [NFT, setNFT] = useState({})
   useEffect(() => {
@@ -170,11 +170,19 @@ function NFTDescription({ nft }) {
                     NFTY collection #{NFT.token_id}
                   </a>
                 </div>
-                <div className="itemCollectionToolbarWrapper">
-                  <div className="buttonGrp">
-                    <FaGift />
-                  </div>
-                </div>
+                {NFT.owner ? (
+                  wallet == NFT.owner.address ? (
+                    <div className="itemCollectionToolbarWrapper">
+                      <div className="buttonGrp">
+                        <FaGift />
+                      </div>
+                    </div>
+                  ) : (
+                    <></>
+                  )
+                ) : (
+                  <></>
+                )}
               </div>
               <h1 className="itemTitle">{NFT.name}</h1>
             </section>
@@ -182,7 +190,16 @@ function NFTDescription({ nft }) {
               <div className="itemOwnerText">
                 Owned by&nbsp;
                 <a className="itemOwner" href="#">
-                  <span>you</span>
+                  <span>
+                    {NFT.owner
+                      ? wallet == NFT.owner.address
+                        ? 'You'
+                        : `${NFT.owner.address.slice(
+                            0,
+                            6,
+                          )}...${NFT.owner.address.slice(38)}`
+                      : 'Unknown'}
+                  </span>
                 </a>
               </div>
             </section>

@@ -31,7 +31,7 @@ function App() {
           <BankInfo onAccoutChange={wallet} />
         </Route>
         <Route path="/nft/:contractAddress/:tokenId/">
-          <NFTDescription />
+          <NFTDescription wallet={wallet} />
         </Route>
       </Router>
     </div>
