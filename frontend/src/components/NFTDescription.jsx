@@ -22,6 +22,8 @@ import {
   FaTag,
 } from 'react-icons/fa'
 
+import noChartData from '../assets/no-chart-data.svg'
+
 const axios = require('axios')
 
 const getNftData = async (contractAddress, tokenId) => {
@@ -214,7 +216,7 @@ function NFTDescription({ wallet }) {
                     <div className="panelContent">
                       <div className="priceHistoryContainer">
                         <div className="priceHistoryGraph">
-                          <img src="no-chart-data.svg" />
+                          <img src={noChartData} />
                         </div>
                         <div className="noOrdersText">No item activity yet</div>
                       </div>
@@ -234,7 +236,7 @@ function NFTDescription({ wallet }) {
                     <div className="panelContent">
                       <div className="priceHistoryContainer">
                         <div className="priceHistoryGraph">
-                          <img src="no-chart-data.svg" />
+                          <img src={noChartData} />
                         </div>
                         <div className="noOrdersText">No listings yet</div>
                       </div>
@@ -254,7 +256,7 @@ function NFTDescription({ wallet }) {
                     <div className="panelContent">
                       <div className="priceHistoryContainer">
                         <div className="priceHistoryGraph">
-                          <img src="no-chart-data.svg" />
+                          <img src={noChartData} />
                         </div>
                         <div className="noOrdersText">No offers yet</div>
                       </div>
