@@ -59,7 +59,7 @@ function NFTDescription({ wallet }) {
     getNft()
   }, [])
   return (
-    <div>
+    <div style={{ paddingTop: '10px' }}>
       <Container>
         <div style={{ justifyContent: 'flex-end', display: 'flex' }}>
           <span style={{ marginRight: '20px' }}>
