@@ -4,7 +4,6 @@ import imgplaceholder from '../assets/image-placeholder.png'
 import { mintNFT } from '../utils/mintNFT'
 
 import { useState } from 'react'
-import ConnectBtn from './ConnectBtn'
 
 export default function CreateNft() {
   const [imgUri, setimgUri] = useState('')

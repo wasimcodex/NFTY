@@ -3,8 +3,7 @@ const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
 const { createAlchemyWeb3 } = require('@alch/alchemy-web3')
 const web3 = createAlchemyWeb3(alchemyKey)
 
-const { abi } = require('../contracts/NFTY.json')
-const { nftAddress } = require('../contracts/nft-contract-address.json')
+const { address, abi } = require('../artifacts/nft-contract.json')
 
 export const mintNFT = async (imgFile, name, description) => {
   if (imgFile === '' || name.trim() === '' || description.trim() === '') {
@@ -49,10 +48,10 @@ export const mintNFT = async (imgFile, name, description) => {
 
     console.log(JsonUri)
 
-    window.contract = await new web3.eth.Contract(abi, nftAddress)
+    window.contract = await new web3.eth.Contract(abi, address)
 
     const transactionParameters = {
-      to: nftAddress,
+      to: address,
       from: window.ethereum.selectedAddress,
       data: window.contract.methods
         .mintNFT(window.ethereum.selectedAddress, JsonUri)

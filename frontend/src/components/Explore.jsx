@@ -8,13 +8,13 @@ import NftCards from './NftCards'
 
 const axios = require('axios')
 
-const { nftAddress } = require('../contracts/nft-contract-address.json')
+const { address } = require('../artifacts/nft-contract.json')
 
 //Gets NFT collections details (id, name, description, owner)
 const getNFTs = async () => {
   const data = await axios
     .get(
-      `https://testnets-api.opensea.io/api/v1/assets?asset_contract_addresses=${nftAddress}&order_direction=desc&offset=0&limit=20`,
+      `https://testnets-api.opensea.io/api/v1/assets?asset_contract_addresses=${address}&order_direction=desc&offset=0&limit=20`,
     )
     .then((res) => {
       return res.data.assets

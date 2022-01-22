@@ -428,8 +428,8 @@
       ]
     },
     "C:\\Users\\wasim\\Desktop\\Code\\NFTY\\contracts\\Bank.sol": {
-      "lastModificationDate": 1641471844777,
-      "contentHash": "260372566de1edc7efb2e3b2bbdea594",
+      "lastModificationDate": 1642852859550,
+      "contentHash": "f6ba022d3afdec952a8d3a1a93142040",
       "sourceName": "contracts/Bank.sol",
       "solcConfig": {
         "version": "0.8.0",
@@ -453,7 +453,10 @@
           }
         }
       },
-      "imports": [],
+      "imports": [
+        "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+        "./Auction.sol"
+      ],
       "versionPragmas": [
         "^0.8.0"
       ],
@@ -498,6 +501,114 @@
       ],
       "artifacts": [
         "NFTY"
+      ]
+    },
+    "C:\\Users\\wasim\\Desktop\\Code\\NFTY\\contracts\\Auction.sol": {
+      "lastModificationDate": 1642852859550,
+      "contentHash": "0c87db67d468927f7953ba02e884cdcd",
+      "sourceName": "contracts/Auction.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "hardhat/console.sol",
+        "@openzeppelin/contracts/token/ERC721/IERC721.sol",
+        "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol",
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "./Bank.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "NFTAuction"
+      ]
+    },
+    "C:\\Users\\wasim\\Desktop\\Code\\NFTY\\node_modules\\hardhat\\console.sol": {
+      "lastModificationDate": 1635864907215,
+      "contentHash": "cc4777addd464ea56fa35b1c45df0591",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
+      ]
+    },
+    "C:\\Users\\wasim\\Desktop\\Code\\NFTY\\node_modules\\@openzeppelin\\contracts\\token\\ERC20\\IERC20.sol": {
+      "lastModificationDate": 1635864877628,
+      "contentHash": "0eac3e1a83ee62326ca007811285b274",
+      "sourceName": "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+      "solcConfig": {
+        "version": "0.8.0",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "IERC20"
       ]
     }
   }

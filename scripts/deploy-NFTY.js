@@ -7,27 +7,29 @@ async function main() {
   const nfty = await NFTY.deploy()
   console.log('Contract deployed to address:', nfty.address)
 
-  saveFrontendFiles(nfty)
+  saveArtifacts(nfty)
 }
 
-saveFrontendFiles = (token) => {
+const saveArtifacts = (token) => {
   const fs = require('fs')
-  const contractDir = __dirname + '/../frontend/src/contracts'
+  const contractDir = __dirname + '/../frontend/src/artifacts'
 
   if (!fs.existsSync(contractDir)) {
     fs.mkdirSync(contractDir)
   }
 
-  fs.writeFileSync(
-    contractDir + '/nft-contract-address.json',
-    JSON.stringify({ nftAddress: token.address }, undefined, 2),
-  )
-
   const TokenArtifact = artifacts.readArtifactSync('NFTY')
 
+  const artifact = {
+    address: token.address,
+    abi: TokenArtifact.abi,
+  }
+
+  console.log('Saving artifacts to:', contractDir)
+
   fs.writeFileSync(
-    contractDir + '/NFTY.json',
-    JSON.stringify(TokenArtifact, null, 2),
+    contractDir + '/nft-contract.json',
+    JSON.stringify(artifact, undefined, 2),
   )
 }
 
