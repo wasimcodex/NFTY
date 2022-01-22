@@ -5,8 +5,13 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./Bank.sol";
 
 contract NFTAuction {
+
+    address bankContractAddress;
+    Bank bankContract;
+
     mapping(address => mapping(uint256 => Auction)) public nftContractAuctions;
 
     struct Auction{
@@ -18,6 +23,8 @@ contract NFTAuction {
         uint256 auctionEndTimestamp;
         address highestBidder;
         uint256 highestBid;
+        address bankApplicant;
+        bool isBank;
     }
 
     event AuctionCreated(address auctionContract, uint256 auctionId, uint256 minPrice, uint256 buyNowPrice, uint256 auctionEndTimestamp);
@@ -32,7 +39,7 @@ contract NFTAuction {
         _;
     }
 
-    function createNFTAuction(address nftContractAddress, uint256 tokenId, uint256 _minPrice, uint256 _buyNowPrice, uint256 _auctionEndTimestamp)
+    function createNFTAuction(address nftContractAddress, uint256 tokenId, uint256 _minPrice, uint256 _buyNowPrice, uint256 _auctionEndTimestamp, bool isBank)
     isOwner(nftContractAddress, tokenId)
     public
     {
@@ -40,6 +47,7 @@ contract NFTAuction {
         nftContractAuctions[nftContractAddress][tokenId].seller = msg.sender;
         nftContractAuctions[nftContractAddress][tokenId].buyNowPrice = _buyNowPrice;
         nftContractAuctions[nftContractAddress][tokenId].auctionEndTimestamp = block.timestamp + _auctionEndTimestamp;
+        nftContractAuctions[nftContractAddress][tokenId].isBank = isBank;
         emit AuctionCreated(nftContractAddress, tokenId, _minPrice, _buyNowPrice, _auctionEndTimestamp);
     }
 
@@ -80,14 +88,32 @@ contract NFTAuction {
         }
     }
 
+
+//Functions for Bank
+function setBankContractAddress(address _bankContractAddress) public {
+        bankContractAddress = _bankContractAddress;
+        bankContract = Bank(_bankContractAddress);
+    }
+
+function setApplicant(address applicant, address nftContractAddress, uint256 tokenId) public{
+    nftContractAuctions[nftContractAddress][tokenId].bankApplicant = applicant;
+}
+
+//Bank functions end
+
     function endAuction(address nftContractAddress, uint256 tokenId) internal {
         if(nftContractAuctions[nftContractAddress][tokenId].highestBidder != address(0)){
-            payable(nftContractAuctions[nftContractAddress][tokenId].seller).transfer(nftContractAuctions[nftContractAddress][tokenId].highestBid);
+            if(nftContractAuctions[nftContractAddress][tokenId].isBank == false){
+             payable(nftContractAuctions[nftContractAddress][tokenId].seller).transfer(nftContractAuctions[nftContractAddress][tokenId].highestBid);    
+            }
             IERC721(nftContractAddress).transferFrom(
                 nftContractAuctions[nftContractAddress][tokenId].seller,
                 nftContractAuctions[nftContractAddress][tokenId].highestBidder,
                 tokenId
             );
+            if(nftContractAuctions[nftContractAddress][tokenId].isBank == true){
+                bankContract.returnPartialPayment{value: nftContractAuctions[nftContractAddress][tokenId].highestBid}(nftContractAuctions[nftContractAddress][tokenId].bankApplicant, nftContractAuctions[nftContractAddress][tokenId].minPrice, nftContractAuctions[nftContractAddress][tokenId].highestBid);
+            }
             address buyer = nftContractAuctions[nftContractAddress][tokenId].highestBidder;
             nftContractAuctions[nftContractAddress][tokenId].bids[buyer] = 0;
             payOutRest(nftContractAddress, tokenId);
