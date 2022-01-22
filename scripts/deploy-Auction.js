@@ -1,41 +1,41 @@
-const { ethers, artifacts } = require('hardhat');
+const { ethers, artifacts } = require('hardhat')
 
 async function main() {
-  const [deployer] = await ethers.getSigners();
+  const [deployer] = await ethers.getSigners()
 
-  console.log('Deploying Auction contract with account:', deployer.address);
+  console.log('Deploying Auction contract with account:', deployer.address)
 
-  const Auction = await ethers.getContractFactory('Auction');
-  const auction = await Auction.deploy();
+  const Auction = await ethers.getContractFactory('NFTAuction')
+  const auction = await Auction.deploy()
 
-  console.log('Contract Auction deployed at address: ', auction.address);
+  console.log('Contract Auction deployed at address: ', auction.address)
 
-  saveArtifacts(auction);
+  saveArtifacts(auction)
 }
 
 const saveArtifacts = (auction) => {
-  const fs = require('fs');
-  const contractDir = __dirname + '/../frontend/src/artifacts';
+  const fs = require('fs')
+  const contractDir = __dirname + '/../frontend/src/artifacts'
 
   if (!fs.existsSync(contractDir)) {
-    fs.mkdirSync(contractDir);
+    fs.mkdirSync(contractDir)
   }
 
-  const auctionArtifact = artifacts.readArtifactSync('Auction');
+  const auctionArtifact = artifacts.readArtifactSync('NFTAuction')
 
   const artifact = {
     address: auction.address,
     abi: auctionArtifact.abi,
-  };
+  }
 
-  console.log('Saving artifacts to:', contractDir);
+  console.log('Saving artifacts to:', contractDir)
 
-  fs.writeFileSync(contractDir + '/auction.json', JSON.stringify(artifact));
-};
+  fs.writeFileSync(contractDir + '/auction.json', JSON.stringify(artifact))
+}
 
 main()
   .then(() => process.exit(0))
   .catch((err) => {
-    console.error(err);
-    process.exit(0);
-  });
+    console.error(err)
+    process.exit(0)
+  })
