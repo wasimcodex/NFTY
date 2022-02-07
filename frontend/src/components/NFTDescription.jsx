@@ -7,8 +7,12 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Table from 'react-bootstrap/Table'
 
+import moment from 'moment'
+
 import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
+
+import { getNftTransactionHistory } from '../utils/nftFunctions'
 
 import {
   FaAlignJustify,
@@ -17,7 +21,6 @@ import {
   FaAngleUp,
   FaChartLine,
   FaExchangeAlt,
-  FaFolder,
   FaGift,
   FaInfoCircle,
   FaTag,
@@ -43,6 +46,11 @@ const getNftData = async (contractAddress, tokenId) => {
   return data
 }
 
+const getTnxs = async (contractAddress, tokenId) => {
+  const data = await getNftTransactionHistory(contractAddress, tokenId)
+  return data
+}
+
 function NFTDescription({ wallet }) {
   let { contractAddress, tokenId } = useParams()
   const [NFT, setNFT] = useState({})
@@ -50,11 +58,14 @@ function NFTDescription({ wallet }) {
   const [showListing, setListing] = useState(false)
   const [showOffers, setOffers] = useState(false)
   const [showDetails, setDetails] = useState(false)
+  const [txnHistory, setTxnHistory] = useState([])
   useEffect(() => {
-    console.log(contractAddress, tokenId)
     async function getNft() {
       const nft = await getNftData(contractAddress, tokenId)
+      const txnHistory = await getTnxs(contractAddress, tokenId)
+      console.log(txnHistory)
       setNFT(nft)
+      setTxnHistory(txnHistory)
     }
     getNft()
   }, [])
@@ -318,13 +329,16 @@ function NFTDescription({ wallet }) {
                         </tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td>Minted</td>
-                          <td>0.001 ETH</td>
-                          <td>Null Address</td>
-                          <td>You</td>
-                          <td>3 days ago</td>
-                        </tr>
+                        {txnHistory &&
+                          txnHistory.map((txn, i) => (
+                            <tr key={i}>
+                              <td>{txn.from == 0 ? 'Minted' : 'Transfer'}</td>
+                              <td>0.01</td>
+                              <td>{txn.from.substring(2, 7).toUpperCase()}</td>
+                              <td>{txn.to.substring(2, 7).toUpperCase()}</td>
+                              <td>{moment(txn.timeStamp * 1000).fromNow()}</td>
+                            </tr>
+                          ))}
                       </tbody>
                     </Table>
                   </div>
