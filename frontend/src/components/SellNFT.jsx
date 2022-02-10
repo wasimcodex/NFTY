@@ -9,13 +9,14 @@ import { FaClock, FaRupeeSign } from 'react-icons/fa';
 import imagePlaceholder from '../assets/image-placeholder.png'
 
 function SellNFT() {
+  const [buyNowPrice, setBuyNowPrice] = React.useState(false)
   return (
     <div>
       <Container>
         <Row>
           <Col lg={6} sm={12}>
             <h1 className='heading'>List Item for Sale</h1>
-            <div className='sellOptions'>
+            {/* <div className='sellOptions'>
               <p className='text'>Type</p>
               <div classsName='options'>
                 <Row>
@@ -37,7 +38,7 @@ function SellNFT() {
                 </Col>
                 </Row> 
               </div>
-            </div>
+            </div> */}
             <div className='sellOptions'>
               <p className='text'>Price</p>
               <div classsName='options'>
@@ -59,16 +60,33 @@ function SellNFT() {
               <div classsName='options'>
                 <Row>
                   <Col>
-                    <Form.Label size="lg">Start Date</Form.Label>
-                    <Form.Control size="lg" type="date" />
-                  </Col>
-                  <Col>
                     <Form.Label size="lg">End Date</Form.Label>
                     <Form.Control size="lg" type="date" />
                   </Col>
                 </Row>
               </div>
             </div>
+            <div className='sellOptions'>
+              <div classsName='options'>
+                <div style={{display: 'flex',justifyContent: 'space-between'}}>
+                  <span className='text'>Add Buy Now Price</span>
+                  <span>
+                    <Form.Check type="switch" id="buyNowChecker" onClick={() => setBuyNowPrice(!buyNowPrice)}/>
+                  </span>
+                </div>   
+              </div>
+            </div>
+            {buyNowPrice && (
+              <div className='sellOptions'>
+                <div classsName='options'>
+                  <Row>
+                    <Col>
+                      <Form.Control size="lg" type="number" placeholder="Amount" />
+                    </Col>
+                  </Row>
+                </div>
+              </div>
+            )}
             <div className='sellOptions'>
               <p className='text'>Fees</p>
               <div classsName='options'>
