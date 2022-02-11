@@ -121,7 +121,7 @@ contract Bank {
     modifier isOwner(address nftContractAddress, uint256 tokenId) {
         require(
             IERC721(nftContractAddress).ownerOf(tokenId) == msg.sender,
-            "Sender doesn't own NFT"
+            "Sender doesn't own NFT!"
         );
         _;
     }
@@ -129,7 +129,7 @@ contract Bank {
     modifier previousLoanOngoing(address applicant) {
         require(
             Loan[applicant].exists == false,
-            "You are not eligible for Loan Application"
+            "You are not eligible for Loan Application!"
         );
         _;
     }
@@ -145,18 +145,23 @@ contract Bank {
     modifier loanBalance(uint256 amount) {
         require(
             Loan[msg.sender].balance_amount == amount,
-            "Amount not equal to pending loan amount"
+            "Amount not equal to pending loan amount!"
         );
         _;
     }
 
     modifier emiEqualsAmount(uint256 emi) {
-        require(Loan[msg.sender].emi == emi, "EMI not equal to amount");
+        require(Loan[msg.sender].emi == emi, "EMI not equal to amount!");
         _;
     }
 
     modifier timeElapsed(uint256 timePassed){
-        require(timePassed > block.timestamp, "Loan ended");
+        require(timePassed > block.timestamp, "Loan ended!");
+        _;
+    }
+
+    modifier hasFundsInAccount(address applicant, uint256 amount){
+        require(balance[applicant] >= amount, "Insufficient funds in your Account!");
         _;
     }
 
@@ -190,7 +195,13 @@ contract Bank {
             address(this),
             tokenId
         );
-        payable(msg.sender).transfer(amount);
+        //payable(msg.sender).transfer(amount);
+        if (balance[msg.sender] > 0) {
+            balance[msg.sender] = balance[msg.sender] + amount;
+        } else {
+            balance[msg.sender] = amount;
+            customers.push(msg.sender);
+        }
         Loan[msg.sender].exists = true;
         emit LoanApplied(
             msg.sender,
@@ -212,7 +223,16 @@ contract Bank {
         LoanClose(msg.sender);
     }
 
-    //Function for loan emi paymet
+    function RepayLoanFromAccount(uint256 amount)
+    timeElapsed(Loan[msg.sender].endTime)
+    hasFundsInAccount(msg.sender,amount)
+    public loanBalance(amount){
+        Loan[msg.sender].balance_amount = 0;
+        balance[msg.sender] = balance[msg.sender] - amount;
+        LoanClose(msg.sender);
+    }
+
+    //Function for loan emi payment
     function LoanEMIPayment(uint256 amount)
         public
         payable
@@ -235,6 +255,27 @@ contract Bank {
         }
     }
 
+    function LoanEMIPaymentFromAccount(uint256 amount)
+        public
+        emiEqualsAmount(amount)
+        timeElapsed(Loan[msg.sender].endTime)
+        hasFundsInAccount(msg.sender,amount)
+    {
+        require(Loan[msg.sender].balance_amount > 0, "No Loan to be paid");
+        require(
+            Loan[msg.sender].balance_amount >= amount,
+            "Insufficient Loan Balance"
+        );
+        Loan[msg.sender].balance_amount = Loan[msg.sender].balance_amount - amount;
+        balance[msg.sender] = balance[msg.sender] - amount;
+        emit EMIpayed(msg.sender, amount, block.timestamp);
+
+        if (Loan[msg.sender].balance_amount == 0) {
+            LoanClose(msg.sender);
+        }
+    }
+
+    //Function to close loan
     function LoanClose(address applicant) internal {
         require(Loan[applicant].exists = true, "No Loan to be closed");
         emit LoanRepaid(
@@ -255,6 +296,7 @@ contract Bank {
         Loan[applicant].tokenId = uint256(0);
     }
 
+    //Functions interacting with Auction.sol
     function setAuctionContractAddress(address _auctionContractAddress) public {
         auctionContractAddress = _auctionContractAddress;
         auctionContract = NFTAuction(_auctionContractAddress);
@@ -267,7 +309,7 @@ contract Bank {
         auctionContract.setApplicant(applicant, Loan[applicant].nftContractAddress, Loan[applicant].tokenId);
     }
 
-    //--------------------------Loan code Ends Here------------------------------//
+
 
     function interest() public {
         require(owner == msg.sender, "Only owner can call this function");
@@ -285,3 +327,4 @@ contract Bank {
     } 
     
 }
+    //--------------------------Loan code Ends Here------------------------------//
