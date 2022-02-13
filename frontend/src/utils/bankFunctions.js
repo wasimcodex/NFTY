@@ -130,3 +130,182 @@ export const exchangeRate = async () => {
   const data = await response.json()
   return data.ethereum.inr
 }
+
+//loan functions
+
+export const applyBankLoan = async (nftContractAdrress, id, amount, duration, repayAmount, inrAmount, emi) => {
+    if (parseFloat(amount) <= 0) {
+        return {
+          status: 'Please enter a valid amount',
+        }
+    }
+    window.contract = await new web3.eth.Contract(abi, address);
+    const d = new Date();
+    const endTimeStamp = d.setMonth(d.getMonth() + duration).valueOf();
+    const WeiAmount = web3.utils.toWei(amount, 'ether')
+    const WeiRepayAmount = web3.utils.toWei(repayAmount, 'ether')
+    
+    const txParams = {
+        to: address,
+        from: window.ethereum.selectedAddress,
+        data: window.contract.methods.ApplyLoan(nftContractAdrress, id, WeiAmount, duration, WeiRepayAmount, inrAmount, emi, endTimeStamp).encodeABI(),
+    }
+    
+    try {
+        await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [txParams, 'latest'],
+        })
+        return {
+        status: 'Transaction Successful. Refresh in a moment',
+        }
+    } catch (error) {
+        return {
+        status: 'Transaction Failed' + error.message,
+        }
+    }
+}
+
+
+export const repayLoanAmount = async (amount) => {
+  if (parseFloat(amount) <= 0) {
+    return {
+      status: 'Please enter a valid amount',
+    }
+  }
+  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+      to: address,
+      from: window.ethereum.selectedAddress,
+      data: window.contract.methods.RepayLoan(WeiAmount).encodeABI(),
+    }
+  
+    try {
+      await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [txParams, 'latest'],
+      })
+      return {
+        status: 'Transaction Successful. Refresh in a moment',
+      }
+    } catch (error) {
+      return {
+        status: 'Transaction Failed' + error.message,
+      }
+    }
+}
+
+
+export const repayLoanAmountFromAccount = async (amount) => {
+  if (parseFloat(amount) <= 0) {
+    return {
+      status: 'Please enter a valid amount',
+    }
+  }
+  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+      to: address,
+      from: window.ethereum.selectedAddress,
+      data: window.contract.methods.RepayLoan(WeiAmount).encodeABI(),
+    }
+  
+    try {
+      await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [txParams, 'latest'],
+      })
+      return {
+        status: 'Transaction Successful. Refresh in a moment',
+      }
+    } catch (error) {
+      return {
+        status: 'Transaction Failed' + error.message,
+      }
+    }
+}
+
+
+export const loanEMI = async (amount) => {
+  if (parseFloat(amount) <= 0) {
+    return {
+      status: 'Please enter a valid amount',
+    }
+  }
+  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+      to: address,
+      from: window.ethereum.selectedAddress,
+      data: window.contract.methods.LoanEMIPayment(WeiAmount).encodeABI(),
+    }
+  
+    try {
+      await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [txParams, 'latest'],
+      })
+      return {
+        status: 'Transaction Successful. Refresh in a moment',
+      }
+    } catch (error) {
+      return {
+        status: 'Transaction Failed' + error.message,
+      }
+    }
+}
+
+
+export const loanEMIAccount = async (amount) => {
+  if (parseFloat(amount) <= 0) {
+    return {
+      status: 'Please enter a valid amount',
+    }
+  }
+  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+      to: address,
+      from: window.ethereum.selectedAddress,
+      data: window.contract.methods.LoanEMIPaymentFromAccount(WeiAmount).encodeABI(),
+    }
+  
+    try {
+      await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [txParams, 'latest'],
+      })
+      return {
+        status: 'Transaction Successful. Refresh in a moment',
+      }
+    } catch (error) {
+      return {
+        status: 'Transaction Failed' + error.message,
+      }
+    }
+}
+
+
+export const approveInterest = async () => {
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+      to: address,
+      from: window.ethereum.selectedAddress,
+      data: window.contract.methods.interest().encodeABI(),
+    }
+  
+    try {
+      await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [txParams, 'latest'],
+      })
+      return {
+        status: 'Transaction Successful. Refresh in a moment',
+      }
+    } catch (error) {
+      return {
+        status: 'Transaction Failed' + error.message,
+      }
+    }
+}
