@@ -8,7 +8,7 @@ const web3 = createAlchemyWeb3(alchemyKey)
 
 const { abi, address } = require('../artifacts/auction.json')
 
-export const createAuction = async (id, minPrice, buyNowPrice, date) => {
+export const createAuction = async (nftAddress, id, minPrice, buyNowPrice, date) => {
     const duration = date.valueOf() - Date.now().valueOf()
     window.contract = await new web3.eth.Contract(abi, address)
     const txParams = {
