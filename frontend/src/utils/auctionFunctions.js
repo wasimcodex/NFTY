@@ -1,0 +1,60 @@
+const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
+const { createAlchemyWeb3 } = require('@alch/alchemy-web3')
+const web3 = createAlchemyWeb3(alchemyKey)
+const { abi, address } = require('../artifacts/nft-contract.json')
+const nftAddress = address
+const { abi, address } = require('../artifacts/bank.json')
+
+export const createAuction = async (id, minPrice, buyNowPrice, date) => {
+    const duration = date.valueOf() - Date.now().valueOf()
+    window.contract = await new web3.eth.Contract(abi, address)
+    const txParams = {
+        to: address,
+        from: window.ethereum.selectedAddress,
+        data: window.contract.methods.createNFTAuction(nftAddress, id, minPrice, buyNowPrice, duration, false).encodeABI(),
+      }
+    
+      try {
+        await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [txParams, 'latest'],
+        })
+        return {
+          status: 'Transaction Successful. Refresh in a moment',
+        }
+      } catch (error) {
+        return {
+          status: 'Transaction Failed' + error.message,
+        }
+      }
+}
+
+export const bidAuction = async (id, amount) => {
+    if (parseFloat(amount) <= 0) {
+        return {
+          status: 'Please enter a valid amount',
+        }
+      }
+    const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
+    window.contract = await new web3.eth.Contract(abi, address)
+    const txParams = {
+        to: address,
+        from: window.ethereum.selectedAddress,
+        value: WeiAmount,
+        data: window.contract.methods.createNFTAuction(id).encodeABI(),
+      }
+    
+      try {
+        await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [txParams, 'latest'],
+        })
+        return {
+          status: 'Transaction Successful. Refresh in a moment',
+        }
+      } catch (error) {
+        return {
+          status: 'Transaction Failed' + error.message,
+        }
+      }
+}
