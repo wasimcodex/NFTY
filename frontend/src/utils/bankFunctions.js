@@ -131,6 +131,30 @@ export const exchangeRate = async () => {
   return data.ethereum.inr
 }
 
+
+export const approveInterest = async () => {
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+      to: address,
+      from: window.ethereum.selectedAddress,
+      data: window.contract.methods.interest().encodeABI(),
+    }
+  
+    try {
+      await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [txParams, 'latest'],
+      })
+      return {
+        status: 'Transaction Successful. Refresh in a moment',
+      }
+    } catch (error) {
+      return {
+        status: 'Transaction Failed' + error.message,
+      }
+    }
+}
+
 //loan functions
 
 export const applyBankLoan = async (nftContractAdrress, id, amount, duration, repayAmount, inrAmount, emi) => {
@@ -227,18 +251,18 @@ export const repayLoanAmountFromAccount = async (amount) => {
 }
 
 
-export const loanEMI = async (amount) => {
-  if (parseFloat(amount) <= 0) {
+export const loanEMI = async (emiAmount) => {
+  if (parseFloat(emiAmount) <= 0) {
     return {
       status: 'Please enter a valid amount',
     }
   }
-  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
+  const WeiEMIAmount = web3.utils.toHex(web3.utils.toWei(emiAmount, 'ether'))
   window.contract = await new web3.eth.Contract(abi, address)
   const txParams = {
       to: address,
       from: window.ethereum.selectedAddress,
-      data: window.contract.methods.LoanEMIPayment(WeiAmount).encodeABI(),
+      data: window.contract.methods.LoanEMIPayment(WeiEMIAmount).encodeABI(),
     }
   
     try {
@@ -286,26 +310,3 @@ export const loanEMIAccount = async (amount) => {
     }
 }
 
-
-export const approveInterest = async () => {
-  window.contract = await new web3.eth.Contract(abi, address)
-  const txParams = {
-      to: address,
-      from: window.ethereum.selectedAddress,
-      data: window.contract.methods.interest().encodeABI(),
-    }
-  
-    try {
-      await window.ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [txParams, 'latest'],
-      })
-      return {
-        status: 'Transaction Successful. Refresh in a moment',
-      }
-    } catch (error) {
-      return {
-        status: 'Transaction Failed' + error.message,
-      }
-    }
-}
