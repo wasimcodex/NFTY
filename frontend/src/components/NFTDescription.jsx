@@ -78,6 +78,7 @@ function NFTDescription({ wallet }) {
               variant="primary"
               size="lg"
               style={{ paddingInline: '20px' }}
+              href={`/nft/${contractAddress}/${tokenId}/sell`}
             >
               Sell
             </Button>
