@@ -37,7 +37,7 @@ function App() {
         <Route path="/nft/transfer/:contractAddress/:tokenId/" exact>
           <Transfer />
         </Route>
-        <Route path="/sell">
+        <Route path="/nft/:contractAddress/:tokenId/sell">
           <SellNFT />
         </Route>
       </Router>
