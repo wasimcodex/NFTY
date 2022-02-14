@@ -1,15 +1,45 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container'
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
-import Card from 'react-bootstrap/Card'
-import { FaClock, FaRupeeSign } from 'react-icons/fa';
+import {
+  Button,
+  Container,
+  FormControl,
+  InputGroup,
+  Col,
+  Form,
+  Card,
+  Row,
+  Alert,
+} from 'react-bootstrap'
 import imagePlaceholder from '../assets/image-placeholder.png'
+import {useParams} from 'react-router-dom'
+import {exchangeRate} from '../utils/bankFunctions';
+import {createAuction} from '../utils/auctionFunctions';
 
 function SellNFT() {
-  const [buyNowPrice, setBuyNowPrice] = React.useState(false)
+  let { contractAddress, tokenId } = useParams()  
+  const [exhRate, setExhRate] = React.useState(0)
+  const [inputETH, setInputETH] = React.useState(0)
+  const [buyNowPrice, setBuyNowPrice] = React.useState(0)
+  const [auctionEndDate, setAuctionEndDate] = React.useState(0)
+  const [response, setResponse] = React.useState(null)
+  
+  const handleInputINR = async(e) => {
+    const rate = await exchangeRate()
+    setExhRate(rate)
+    setInputETH((e.target.value / exhRate).toFixed(18))
+  }
+
+  const handleInputBuyNowPrice = async(e) => {
+    const rate = await exchangeRate()
+    setExhRate(rate)
+    setBuyNowPrice((e.target.value / exhRate).toFixed(18))
+  }
+  const auctionCreate = async() => {
+    console.log(contractAddress, tokenId, inputETH, buyNowPrice, auctionEndDate)
+    const completeListing = await createAuction(contractAddress, tokenId, inputETH, buyNowPrice, auctionEndDate)
+    setResponse(completeListing.status)
+  }
+
   return (
     <div>
       <Container>
@@ -42,17 +72,23 @@ function SellNFT() {
             <div className='sellOptions'>
               <p className='text'>Price</p>
               <div classsName='options'>
-                <Row>
-                  <Col lg={3}>
-                  <Form.Select size="lg">
-                    <option>ETH</option>
-                    <option>INR</option>
-                  </Form.Select>
-                  </Col>
-                  <Col>
-                    <Form.Control size="lg" type="number" placeholder="Amount" />
-                  </Col>
-                </Row>
+                  <InputGroup>
+                    <FormControl
+                      placeholder="Enter Amount in INR"
+                      type="number"
+                      onChange={handleInputINR}
+                    />
+                    <InputGroup.Text>INR</InputGroup.Text>
+                  </InputGroup>
+                  <InputGroup>
+                    <FormControl
+                      placeholder="ETH Equivalent"
+                      type="number"
+                      value={inputETH > 0 ? inputETH : ''}
+                      readOnly
+                    />
+                    <InputGroup.Text>ETH</InputGroup.Text>
+                  </InputGroup>
               </div>
             </div>
             <div className='sellOptions'>
@@ -61,32 +97,36 @@ function SellNFT() {
                 <Row>
                   <Col>
                     <Form.Label size="lg">End Date</Form.Label>
-                    <Form.Control size="lg" type="date" />
+                    <Form.Control size="lg" type="date" onChange={e => setAuctionEndDate(e.target.value)}/>
                   </Col>
                 </Row>
               </div>
             </div>
             <div className='sellOptions'>
+            <p className='text'>Add Buy Now Price</p>
               <div classsName='options'>
-                <div style={{display: 'flex',justifyContent: 'space-between'}}>
-                  <span className='text'>Add Buy Now Price</span>
-                  <span>
-                    <Form.Check type="switch" id="buyNowChecker" onClick={() => setBuyNowPrice(!buyNowPrice)}/>
-                  </span>
-                </div>   
+              <InputGroup>
+                    <FormControl
+                      placeholder="Enter Amount in INR"
+                      type="number"
+                      onChange={handleInputBuyNowPrice}
+                    />
+                    <InputGroup.Text>INR</InputGroup.Text>
+                  </InputGroup>
+                  <InputGroup>
+                    <FormControl
+                      placeholder="ETH Equivalent"
+                      type="number"
+                      value={buyNowPrice > 0 ? buyNowPrice : ''}
+                      readOnly
+                    />
+                    <InputGroup.Text>ETH</InputGroup.Text>
+                  </InputGroup>
+                {/* <div style={{display: 'flex',justifyContent: 'space-between'}}>
+                  <Form.Control size="lg" type="number" placeholder="Amount" onChange={e => setBuyNowPrice(e.target.value)}/>
+                </div>    */}
               </div>
             </div>
-            {buyNowPrice && (
-              <div className='sellOptions'>
-                <div classsName='options'>
-                  <Row>
-                    <Col>
-                      <Form.Control size="lg" type="number" placeholder="Amount" />
-                    </Col>
-                  </Row>
-                </div>
-              </div>
-            )}
             <div className='sellOptions'>
               <p className='text'>Fees</p>
               <div classsName='options'>
@@ -98,7 +138,7 @@ function SellNFT() {
             </div>
             <div className='sellOptions'>
               <div className="mb-2">
-                <Button variant="primary" size="lg">Complete Listing</Button>
+                <Button variant="primary" size="lg" onClick={auctionCreate}>Complete Listing</Button>
               </div>
             </div>
           </Col>
@@ -110,21 +150,29 @@ function SellNFT() {
                 <Card>
                   <Card.Img variant="bottom" src={imagePlaceholder} />
                   <Card.Body>
-                  <div style={{display: 'flex',justifyContent: 'space-between'}}>
-                  <Card.Subtitle className="mb-2 text-muted">Collection name</Card.Subtitle>
-                  <Card.Subtitle className="mb-2 text-muted">Price</Card.Subtitle>
-                  </div>
-                  <div style={{display: 'flex',justifyContent: 'space-between'}}>
-                  <Card.Title>NFT Title</Card.Title>
-                  <Card.Title>1 ETH</Card.Title>
-                  </div>
-                  
+                    <div style={{display: 'flex',justifyContent: 'space-between'}}>
+                      <Card.Subtitle className="mb-2 text-muted">Collection name</Card.Subtitle>
+                      <Card.Subtitle className="mb-2 text-muted">Price</Card.Subtitle>
+                    </div>
+                    <div style={{display: 'flex',justifyContent: 'space-between'}}>
+                      <Card.Title>NFT Title</Card.Title>
+                      <Card.Title>1 ETH</Card.Title>
+                    </div>        
                   </Card.Body>
                 </Card>
               </div>
             </div>
           </Col>
         </Row>
+        {response && (
+              <Container>
+                <Row className="justify-content-center">
+                  <Col md="6">
+                    <Alert variant="info">{response}</Alert>
+                  </Col>
+                </Row>
+              </Container>
+        )}
       </Container>
     </div>);
 }
