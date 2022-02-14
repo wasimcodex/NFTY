@@ -10,11 +10,13 @@ const { abi, address } = require('../artifacts/auction.json')
 
 export const createAuction = async (nftAddress, id, minPrice, buyNowPrice, date) => {
     const duration = date.valueOf() - Date.now().valueOf()
+    const WeiMinPrice = web3.utils.toHex(web3.utils.toWei(minPrice, 'ether'))
+    const WeiBuyNow = web3.utils.toHex(web3.utils.toWei(buyNowPrice, 'ether'))
     window.contract = await new web3.eth.Contract(abi, address)
     const txParams = {
         to: address,
         from: window.ethereum.selectedAddress,
-        data: window.contract.methods.createNFTAuction(nftAddress, id, minPrice, buyNowPrice, duration, false).encodeABI(),
+        data: window.contract.methods.createNFTAuction(nftAddress, id, WeiMinPrice, WeiBuyNow, duration, false).encodeABI(),
       }
     
       try {
