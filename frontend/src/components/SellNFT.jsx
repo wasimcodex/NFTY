@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState, useEffect } from 'react';
 import {
   Button,
   Container,
@@ -15,14 +16,39 @@ import {useParams} from 'react-router-dom'
 import {exchangeRate} from '../utils/bankFunctions';
 import {createAuction} from '../utils/auctionFunctions';
 
-function SellNFT() {
-  let { contractAddress, tokenId } = useParams()  
-  const [exhRate, setExhRate] = React.useState(0)
-  const [inputETH, setInputETH] = React.useState(0)
-  const [buyNowPrice, setBuyNowPrice] = React.useState(0)
-  const [auctionEndDate, setAuctionEndDate] = React.useState(0)
-  const [response, setResponse] = React.useState(null)
-  
+const axios = require('axios');
+
+const getNftData = async (contractAddress, tokenId) => {
+  const data = await axios
+    .get(
+      `https://testnets-api.opensea.io/api/v1/asset/${contractAddress}/${tokenId}`,
+    )
+    .then((res) => {
+      return res.data
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  return data
+}
+
+function SellNFT({ wallet }) {
+  let { contractAddress, tokenId } = useParams()
+  const [NFT, setNFT] = useState({})
+  const [exhRate, setExhRate] = useState(0)
+  const [inputETH, setInputETH] = useState(0)
+  const [buyNowPrice, setBuyNowPrice] = useState(0)
+  const [auctionEndDate, setAuctionEndDate] = useState(0)
+  const [response, setResponse] = useState(null)
+  useEffect(() => {
+    async function getNft() {
+      const nft = await getNftData(contractAddress, tokenId)
+      console.log(nft)
+      setNFT(nft)
+    }
+    getNft()
+  }, [])
+
   const handleInputINR = async(e) => {
     const rate = await exchangeRate()
     setExhRate(rate)
@@ -148,14 +174,14 @@ function SellNFT() {
             <div className="sellOptions">
               <div>
                 <Card>
-                  <Card.Img variant="bottom" src={imagePlaceholder} />
+                  <Card.Img variant="bottom" src={NFT.image_url} />
                   <Card.Body>
                     <div style={{display: 'flex',justifyContent: 'space-between'}}>
                       <Card.Subtitle className="mb-2 text-muted">Collection name</Card.Subtitle>
                       <Card.Subtitle className="mb-2 text-muted">Price</Card.Subtitle>
                     </div>
                     <div style={{display: 'flex',justifyContent: 'space-between'}}>
-                      <Card.Title>NFT Title</Card.Title>
+                      <Card.Title>{NFT.name}</Card.Title>
                       <Card.Title>1 ETH</Card.Title>
                     </div>        
                   </Card.Body>
