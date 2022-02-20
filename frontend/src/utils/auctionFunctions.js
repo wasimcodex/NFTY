@@ -1,18 +1,15 @@
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
 const { createAlchemyWeb3 } = require('@alch/alchemy-web3')
 const web3 = createAlchemyWeb3(alchemyKey)
-// var { abi, address } = require('../artifacts/nft-contract.json')
-// const nftAddress = address
-// const { abi, address } = require('../artifacts/bank.json')
-// const bankAddress = address
 
 const { abi, address } = require('../artifacts/auction.json')
 
 export const createAuction = async (nftAddress, id, minPrice, buyNowPrice, date) => {
-    const duration = date.valueOf() - Date.now().valueOf()
-    const WeiMinPrice = web3.utils.toHex(web3.utils.toWei(minPrice, 'ether'))
-    const WeiBuyNow = web3.utils.toHex(web3.utils.toWei(buyNowPrice, 'ether'))
     window.contract = await new web3.eth.Contract(abi, address)
+    const duration = new Date(date).valueOf() - Date.now()
+    const WeiMinPrice = web3.utils.toWei(minPrice, 'ether')
+    const WeiBuyNow = web3.utils.toWei(buyNowPrice, 'ether')
+    console.log(duration, WeiMinPrice, WeiBuyNow)
     const txParams = {
         to: address,
         from: window.ethereum.selectedAddress,
