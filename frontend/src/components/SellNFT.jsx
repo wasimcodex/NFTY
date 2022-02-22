@@ -45,21 +45,19 @@ function SellNFT({ wallet }) {
   useEffect(() => {
     async function getNft() {
       const nft = await getNftData(contractAddress, tokenId)
+      const rate = await exchangeRate()
       // console.log(nft)
       setNFT(nft)
+      setExhRate(rate)
     }
     getNft()
   }, [])
 
   const handleInputINR = async(e) => {
-    const rate = await exchangeRate()
-    setExhRate(rate)
     setInputETH((e.target.value / exhRate).toFixed(8))
   }
 
   const handleInputBuyNowPrice = async(e) => {
-    const rate = await exchangeRate()
-    setExhRate(rate)
     setBuyNowPrice((e.target.value / exhRate).toFixed(8))
   }
   const auctionCreate = async() => {
