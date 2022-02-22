@@ -237,6 +237,45 @@ code {
   border-bottom-right-radius: 10px;
 }
 
+.tradePriceContainer {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+  color: rgb(53, 56, 64);
+}
+
+.priceContainer {
+  -webkit-box-align: center;
+  align-items: center;
+  display: flex;
+  font-weight: 600;
+  color: rgb(53, 56, 64);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.priceAmount {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.priceINR {
+  display: block;
+  font-size: 15px;
+  margin-left: 8px;
+  margin-top: 15px;
+  color: rgb(53, 56, 64);
+  width: fit-content;
+  max-width: 100%;
+}
+
+.buttonContainer {
+  display: block;
+  max-width: 100%;
+}
+
 .priceHistoryGraph {
   height: initial;
   margin-bottom: 16px;
@@ -253,6 +292,10 @@ code {
   overflow: hidden;
   position: relative;
   border-radius: 10px;
+}
+
+.indButton {
+  display: inline-flex;
 }
 
 .noOrdersText {
@@ -350,6 +393,13 @@ code {
   display: flex;
 }
 
+@media screen and (min-width: 600px) {
+.buttonContainer {
+    display: block;
+    max-width: 100%;
+  }
+}
+
 @media (min-width: 1024px) {
   .itemHeader {
     margin: 20px 20px 15px;
@@ -362,5 +412,15 @@ code {
   }
   .itemFrame {
     margin: 20px;
+  }
+  .buttonContainer {
+    display: flex;
+    max-width: 420px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .indButton {
+    width: 50%;
   }
 }
