@@ -9,6 +9,7 @@ import ConnectBtn from './components/ConnectBtn'
 import NFTDescription from './components/NFTDescription'
 import Transfer from './components/Transfer'
 import SellNFT from './components/SellNFT'
+import Profile from './components/Profile'
 
 function App() {
   const [status, setStatus] = useState('')
@@ -39,6 +40,9 @@ function App() {
         </Route>
         <Route path="/nft/:contractAddress/:tokenId/sell">
           <SellNFT />
+        </Route>
+        <Route path="/profile">
+          <Profile />
         </Route>
       </Router>
     </div>

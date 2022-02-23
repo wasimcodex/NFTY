@@ -6,6 +6,7 @@ import Container from 'react-bootstrap/Container'
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Table from 'react-bootstrap/Table'
+import eth from '../assets/eth.svg'
 
 import moment from 'moment'
 
@@ -20,6 +21,7 @@ import {
   FaAngleDown,
   FaAngleUp,
   FaChartLine,
+  FaClock,
   FaExchangeAlt,
   FaGift,
   FaInfoCircle,
@@ -81,6 +83,13 @@ function NFTDescription({ wallet }) {
               href={`/nft/${contractAddress}/${tokenId}/sell`}
             >
               Sell
+            </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              style={{ paddingInline: '20px' }}
+            >
+              Close Auction
             </Button>
           </span>
         </div>
@@ -188,7 +197,7 @@ function NFTDescription({ wallet }) {
                         <Link
                           to={`/nft/transfer/${contractAddress}/${tokenId}`}
                         >
-                          <FaGift style={{ fontSize: '18px' }} />
+                          <FaGift style={{ fontSize: '25px', color: 'rgb(53, 56, 64)' }} />
                         </Link>
                       </div>
                     </div>
@@ -216,6 +225,83 @@ function NFTDescription({ wallet }) {
                       : 'Unknown'}
                   </span>
                 </a>
+              </div>
+            </section>
+            <section id='buyerSection'>
+              <div className="itemFrame">
+                <div className="basePanel">
+                  <div className="basePanelHeader" style={{ display: 'flex', justifyContent: 'space-between', color: 'rgb(112, 122, 131)' }}>
+                    <span>
+                      <FaClock />
+                      <span style={{ marginLeft: '15px', fontWeight: '400' }}>Sale Ends date</span>
+                    </span>
+                  </div>
+                  <div className="basePanelBody">
+                    <div className="panelContainer">
+                      <div className="panelContent">
+                          <div className="priceHistoryContainer" style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <div>
+                              <div style={{color: 'rgb(112, 122, 131)'}}>Minimum Price</div>
+                              <div>
+                                <div className='priceContainer'>
+                                  <img
+                                    style={{ height: '25px', marginRight: '5px' }}
+                                    src={eth}
+                                  ></img>
+                                  <div className='priceAmount' style={{ fontSize: '30px', fontWeight: '600', marginLeft: '0.3em'}}>0.371</div>
+                                </div>
+                                <div className='priceINR'>
+                                  <div className='priceAmount' style={{ color: 'rgb(112, 122, 131)', fontSize: '15px', fontWeight: 'normal'}}>
+                                    (INR 46000)
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <div style={{color: 'rgb(112, 122, 131)'}}>Highest Bid</div>
+                              <div>
+                                <div className='priceContainer'>
+                                  <img
+                                    style={{ height: '25px', marginRight: '5px' }}
+                                    src={eth}
+                                  ></img>
+                                  <div className='priceAmount' style={{ fontSize: '30px', fontWeight: '600', marginLeft: '0.3em'}}>0.381</div>
+                                </div>
+                                <div className='priceINR'>
+                                  <div className='priceAmount' style={{ color: 'rgb(112, 122, 131)', fontSize: '15px', fontWeight: 'normal'}}>
+                                    (INR 47000)
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <div style={{color: 'rgb(112, 122, 131)'}}>Buy Now Price</div>
+                              <div>
+                                <div className='priceContainer'>
+                                  <img
+                                    style={{ height: '25px', marginRight: '5px' }}
+                                    src={eth}
+                                  ></img>
+                                  <div className='priceAmount' style={{ fontSize: '30px', fontWeight: '600', marginLeft: '0.3em'}}>0.450</div>
+                                </div>
+                                <div className='priceINR'>
+                                  <div className='priceAmount' style={{ color: 'rgb(112, 122, 131)', fontSize: '15px', fontWeight: 'normal'}}>
+                                    (INR 53000)
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div> 
+                            <div style={{display: 'flex',justifyContent: 'initial', marginTop: '2%'}}>
+                              <Button variant="primary" size='lg'>Buy Now</Button>
+                              <Button variant="outline-primary" size='lg' style={{ marginLeft: '2%'}}>Place Bid</Button>
+                            </div>   
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
             <div className="itemFrame">
