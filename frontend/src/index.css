@@ -264,8 +264,6 @@ code {
 .priceINR {
   display: block;
   font-size: 15px;
-  margin-left: 8px;
-  margin-top: 15px;
   color: rgb(53, 56, 64);
   width: fit-content;
   max-width: 100%;
@@ -391,6 +389,29 @@ code {
   margin-right: 0px;
   box-sizing: border-box;
   display: flex;
+}
+
+.nameHeader {
+  margin-top: 12px;
+  max-width: 80vw;
+  -webkit-box-align: center;
+  align-items: center;
+  display: flex;
+}
+
+.addrContainer {
+  display: flex;
+  padding: 4px 8px;
+  border: 1px solid rgb(229, 232, 235);
+  border-radius: 16px;
+}
+
+.addrText {
+  display: flex;
+  /* margin-left: 3px; */
+  color: rgb(112, 122, 131);
+  font-weight: 500;
+  font-size: 16px;
 }
 
 @media screen and (min-width: 600px) {
