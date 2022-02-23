@@ -84,6 +84,13 @@ function NFTDescription({ wallet }) {
             >
               Sell
             </Button>
+            <Button
+              variant="primary"
+              size="lg"
+              style={{ paddingInline: '20px' }}
+            >
+              Close Auction
+            </Button>
           </span>
         </div>
         <Row>
@@ -190,7 +197,7 @@ function NFTDescription({ wallet }) {
                         <Link
                           to={`/nft/transfer/${contractAddress}/${tokenId}`}
                         >
-                          <FaGift style={{ fontSize: '18px' }} />
+                          <FaGift style={{ fontSize: '25px', color: 'rgb(53, 56, 64)' }} />
                         </Link>
                       </div>
                     </div>
@@ -223,37 +230,53 @@ function NFTDescription({ wallet }) {
             <section id='buyerSection'>
               <div className="itemFrame">
                 <div className="basePanel">
-                  <div
-                    className="basePanelHeader"
-                    style={{ display: 'flex', justifyContent: 'space-between', color: 'rgb(112, 122, 131)' }}
-                  >
+                  <div className="basePanelHeader" style={{ display: 'flex', justifyContent: 'space-between', color: 'rgb(112, 122, 131)' }}>
                     <span>
                       <FaClock />
                       <span style={{ marginLeft: '15px', fontWeight: '400' }}>Sale Ends date</span>
                     </span>
                   </div>
-                    <div className="basePanelBody">
-                      <div className="panelContainer">
-                        <div className="panelContent">
-                          <div className="priceHistoryContainer">
-                            <div style={{color: 'rgb(112, 122, 131)'}}>Current price</div>
-                            <div className='tradePriceContainer'>
-                              <div className='priceContainer'>
-                                <img
-                                  style={{ height: '25px', marginRight: '5px' }}
-                                  src={eth}
-                                ></img>
-                                <div className='priceAmount' style={{ fontSize: '30px', fontWeight: '600', marginLeft: '0.3em'}}>0.371</div>
+                  <div className="basePanelBody">
+                    <div className="panelContainer">
+                      <div className="panelContent">
+                          <div className="priceHistoryContainer" style={{display: 'flex', justifyContent: 'space-between'}}>
+                            <div>
+                              <div style={{color: 'rgb(112, 122, 131)'}}>Minimum Price</div>
+                              <div>
+                                <div className='priceContainer'>
+                                  <img
+                                    style={{ height: '25px', marginRight: '5px' }}
+                                    src={eth}
+                                  ></img>
+                                  <div className='priceAmount' style={{ fontSize: '30px', fontWeight: '600', marginLeft: '0.3em'}}>0.371</div>
+                                </div>
+                                <div className='priceINR'>
+                                  <div className='priceAmount' style={{ color: 'rgb(112, 122, 131)', fontSize: '15px', fontWeight: 'normal'}}>
+                                    (INR 46000)
+                                  </div>
+                                </div>
                               </div>
-                              <div className='priceINR'>
-                                <div className='priceAmount' style={{ color: 'rgb(112, 122, 131)', fontSize: '15px', fontWeight: 'normal'}}>
-                                  (INR 46000)
+                            </div>
+                            <div>
+                              <div style={{color: 'rgb(112, 122, 131)'}}>Highest Bid</div>
+                              <div>
+                                <div className='priceContainer'>
+                                  <img
+                                    style={{ height: '25px', marginRight: '5px' }}
+                                    src={eth}
+                                  ></img>
+                                  <div className='priceAmount' style={{ fontSize: '30px', fontWeight: '600', marginLeft: '0.3em'}}>0.381</div>
+                                </div>
+                                <div className='priceINR'>
+                                  <div className='priceAmount' style={{ color: 'rgb(112, 122, 131)', fontSize: '15px', fontWeight: 'normal'}}>
+                                    (INR 47000)
+                                  </div>
                                 </div>
                               </div>
                             </div>
                             <div>
                               <div style={{color: 'rgb(112, 122, 131)'}}>Buy Now Price</div>
-                              <div className='tradePriceContainer'>
+                              <div>
                                 <div className='priceContainer'>
                                   <img
                                     style={{ height: '25px', marginRight: '5px' }}
@@ -268,16 +291,16 @@ function NFTDescription({ wallet }) {
                                 </div>
                               </div>
                             </div>
-                            <div> 
-                                <div style={{display: 'flex',justifyContent: 'initial', marginTop: '2%'}}>
-                                  <Button variant="primary" size='lg'>Buy Now</Button>
-                                  <Button variant="outline-primary" size='lg' style={{ marginLeft: '2%'}}>Place Bid</Button>
-                                </div>   
-                            </div>
                           </div>
-                        </div>
+                          <div> 
+                            <div style={{display: 'flex',justifyContent: 'initial', marginTop: '2%'}}>
+                              <Button variant="primary" size='lg'>Buy Now</Button>
+                              <Button variant="outline-primary" size='lg' style={{ marginLeft: '2%'}}>Place Bid</Button>
+                            </div>   
+                          </div>
                       </div>
                     </div>
+                  </div>
                 </div>
               </div>
             </section>
