@@ -1,4 +1,6 @@
 import { IoIosRefresh } from 'react-icons/io'
+import { FaExchangeAlt, FaAngleUp, FaAngleDown } from 'react-icons/fa'
+import Table from 'react-bootstrap/Table'
 import {
   Button,
   Container,
@@ -15,6 +17,7 @@ import {
   depositEth,
   withdrawEth,
   transferEth,
+  getTransactions,
 } from '../utils/bankFunctions'
 
 const BankInfo = ({ onAccoutChange }) => {
@@ -28,6 +31,8 @@ const BankInfo = ({ onAccoutChange }) => {
   const [inputETH, setInputETH] = useState(null)
   const [inputAddress, setInputAddress] = useState(null)
   const [response, setResponse] = useState(null)
+  const [showTransactions, setShowTransactions] = useState(false)
+  const [transactions, setTransactions] = useState([])
 
   const handleShowDeposit = () => {
     setShowDeposit(true)
@@ -56,6 +61,13 @@ const BankInfo = ({ onAccoutChange }) => {
     setBalanceINR(balance.inr)
     setExhRate(balance.exhRate)
   }
+
+  const getTnxs = async () => {
+    const tnxs = await getTransactions()
+    console.log(tnxs)
+    setTransactions(tnxs)
+   }
+
 
   const handleInputINR = (e) => {
     setInputINR(e.target.value)
@@ -96,6 +108,7 @@ const BankInfo = ({ onAccoutChange }) => {
 
   useEffect(() => {
     checkBalance()
+    getTnxs()
   }, [onAccoutChange])
 
   return (
@@ -258,6 +271,60 @@ const BankInfo = ({ onAccoutChange }) => {
           </Container>
         )}
       </div>
+      <Container>
+      <Row>
+          <div className="itemFrame" style={{ padding: '12px', margin: '0' }}>
+            <div className="basePanel">
+              <button className="basePanelHeader"
+                style={{ display: 'flex', justifyContent: 'space-between' }}  
+                onClick={() => setShowTransactions(!showTransactions)}
+              >
+                <span>
+                <FaExchangeAlt />
+                <span style={{ marginLeft: '15px' }}>Transaction History</span>
+                </span>
+                {showTransactions ? <FaAngleUp /> : <FaAngleDown />}
+              </button>
+              {showTransactions && (
+              <div className="basePanelBody">
+                <div className="panelContainer">
+                  <div className="panelContent">
+                    <Table responsive borderless>
+                      <thead>
+                        <tr>
+                          <th>Type</th>
+                          <th>Value</th>
+                          <th>From</th>
+                          <th>To</th>
+                          <th>Balance </th>
+                          <th>Date</th>
+                        </tr>
+                      </thead>
+                        <tbody>
+                          {transactions.map((transaction, index) => (
+                            <tr key={index}>
+                              <td>{transaction.event}</td>
+                              <td>{((transaction.returnValues.amount)/Math.pow(10,18)).toFixed(4)}</td>
+                              <td>{
+                                transaction.event === 'Transfer' ? transaction.returnValues.from.slice(2,8).toUpperCase() : transaction.event === 'Deposit' ? 'Wallet' : 'Self'
+                              }</td>
+                              <td>{
+                                transaction.event === 'Transfer' ? transaction.returnValues.to.slice(2,8).toUpperCase() : transaction.event === 'Withdraw' ? 'Wallet' : 'Self'
+                              }</td>
+                              <td>{((transaction.returnValues.balance) / Math.pow(10, 18)).toFixed(4)}</td>
+                              <td>{ new Date(transaction.returnValues.timestamp * 1000).toLocaleDateString("en-US")}</td>
+                            </tr>
+                          ))}
+                      </tbody>
+                    </Table>
+                  </div>
+                </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </Row>
+      </Container>
     </>
   )
 }
