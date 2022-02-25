@@ -66,8 +66,7 @@ const BankInfo = ({ onAccoutChange }) => {
     const tnxs = await getTransactions()
     console.log(tnxs)
     setTransactions(tnxs)
-   }
-
+  }
 
   const handleInputINR = (e) => {
     setInputINR(e.target.value)
@@ -272,53 +271,105 @@ const BankInfo = ({ onAccoutChange }) => {
         )}
       </div>
       <Container>
-      <Row>
+        <Row>
           <div className="itemFrame" style={{ padding: '12px', margin: '0' }}>
             <div className="basePanel">
-              <button className="basePanelHeader"
-                style={{ display: 'flex', justifyContent: 'space-between' }}  
+              <button
+                className="basePanelHeader"
+                style={{ display: 'flex', justifyContent: 'space-between' }}
                 onClick={() => setShowTransactions(!showTransactions)}
               >
                 <span>
-                <FaExchangeAlt />
-                <span style={{ marginLeft: '15px' }}>Transaction History</span>
+                  <FaExchangeAlt />
+                  <span style={{ marginLeft: '15px' }}>
+                    Transaction History
+                  </span>
                 </span>
                 {showTransactions ? <FaAngleUp /> : <FaAngleDown />}
               </button>
               {showTransactions && (
-              <div className="basePanelBody">
-                <div className="panelContainer">
-                  <div className="panelContent">
-                    <Table responsive borderless>
-                      <thead>
-                        <tr>
-                          <th>Type</th>
-                          <th>Value</th>
-                          <th>From</th>
-                          <th>To</th>
-                          <th>Balance </th>
-                          <th>Date</th>
-                        </tr>
-                      </thead>
+                <div className="basePanelBody">
+                  <div className="panelContainer">
+                    <div className="panelContent">
+                      <Table responsive borderless>
+                        <thead>
+                          <tr>
+                            <th>Type</th>
+                            <th>Value</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Balance </th>
+                            <th>Date</th>
+                          </tr>
+                        </thead>
                         <tbody>
                           {transactions.map((transaction, index) => (
                             <tr key={index}>
                               <td>{transaction.event}</td>
-                              <td>{((transaction.returnValues.amount)/Math.pow(10,18)).toFixed(4)}</td>
-                              <td>{
-                                transaction.event === 'Transfer' ? transaction.returnValues.from.slice(2,8).toUpperCase() : transaction.event === 'Deposit' ? 'Wallet' : 'Self'
-                              }</td>
-                              <td>{
-                                transaction.event === 'Transfer' ? transaction.returnValues.to.slice(2,8).toUpperCase() : transaction.event === 'Withdraw' ? 'Wallet' : 'Self'
-                              }</td>
-                              <td>{((transaction.returnValues.balance) / Math.pow(10, 18)).toFixed(4)}</td>
-                              <td>{ new Date(transaction.returnValues.timestamp * 1000).toLocaleDateString("en-US")}</td>
+                              <td>
+                                {(
+                                  transaction.returnValues.amount /
+                                  Math.pow(10, 18)
+                                ).toFixed(4)}
+                              </td>
+                              <td>
+                                {transaction.event === 'Transfer'
+                                  ? transaction.returnValues.from
+                                      .slice(2, 8)
+                                      .toUpperCase()
+                                  : transaction.event === 'Deposit'
+                                  ? 'Wallet'
+                                  : 'Self'}
+                              </td>
+                              <td>
+                                {transaction.event === 'Transfer'
+                                  ? transaction.returnValues.to
+                                      .slice(2, 8)
+                                      .toUpperCase()
+                                  : transaction.event === 'Withdraw'
+                                  ? 'Wallet'
+                                  : 'Self'}
+                              </td>
+                              {transaction.event === 'Transfer' &&
+                                transaction.returnValues.from.toLowerCase() ===
+                                  window.ethereum.selectedAddress && (
+                                  <td>
+                                    {(
+                                      transaction.returnValues.balanceSender /
+                                      Math.pow(10, 18)
+                                    ).toFixed(4)}
+                                  </td>
+                                )}
+                              {transaction.event === 'Transfer' &&
+                                transaction.returnValues.to.toLowerCase() ===
+                                  window.ethereum.selectedAddress && (
+                                  <td>
+                                    {(
+                                      transaction.returnValues.balanceReceiver /
+                                      Math.pow(10, 18)
+                                    ).toFixed(4)}
+                                  </td>
+                                )}
+                              {(transaction.event === 'Deposit' ||
+                                transaction.event === 'Withdraw') && (
+                                <td>
+                                  {(
+                                    transaction.returnValues.balance /
+                                    Math.pow(10, 18)
+                                  ).toFixed(4)}
+                                </td>
+                              )}
+                              <td>
+                                {new Date(
+                                  transaction.returnValues.timestamp * 1000,
+                                ).toLocaleDateString('en-US')}
+                              </td>
                             </tr>
                           ))}
-                      </tbody>
-                    </Table>
+                        </tbody>
+                      </Table>
+                    </div>
                   </div>
-                </div>
                 </div>
               )}
             </div>
