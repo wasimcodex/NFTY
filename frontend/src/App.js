@@ -10,6 +10,7 @@ import NFTDescription from './components/NFTDescription'
 import Transfer from './components/Transfer'
 import SellNFT from './components/SellNFT'
 import Profile from './components/Profile'
+import ApplyLoan from './components/ApplyLoan'
 
 function App() {
   const [status, setStatus] = useState('')
@@ -43,6 +44,9 @@ function App() {
         </Route>
         <Route path="/profile">
           <Profile />
+        </Route>
+        <Route path="/applyloan">
+          <ApplyLoan />
         </Route>
       </Router>
     </div>
