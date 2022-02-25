@@ -1,15 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
 import {
-  Button,
   Container,
-  FormControl,
-  InputGroup,
-  Col,
-  Form,
-  Card,
-  Row,
-  Alert,
   Image,
   Tabs,
   Tab,
