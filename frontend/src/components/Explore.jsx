@@ -3,7 +3,7 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import { Row, Col } from 'react-bootstrap'
+import { Row, Col, Container } from 'react-bootstrap'
 import NftCards from './NftCards'
 
 const axios = require('axios')
@@ -38,15 +38,17 @@ export default function Explore() {
   const [Status, setStatus] = useState('')
   return (
     <div>
-      <div style={{ padding: '20px' }}>
-        <Row xs={1} md={3} className="g-4">
-          {NFTs.map((nft, index) => (
-            <Col key={index}>
-              <NftCards nft={nft} key={index} />
-            </Col>
-          ))}
-        </Row>
-      </div>
+      <Container>
+        <div style={{ padding: '20px' }}>
+          <Row xs={1} md={3} className="g-4">
+            {NFTs.map((nft, index) => (
+              <Col key={index}>
+                <NftCards nft={nft} key={index} />
+              </Col>
+            ))}
+          </Row>
+        </div>
+      </Container>
     </div>
   )
 }
