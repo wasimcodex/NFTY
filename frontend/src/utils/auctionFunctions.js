@@ -4,150 +4,169 @@ const web3 = createAlchemyWeb3(alchemyKey)
 
 const { abi, address } = require('../artifacts/auction.json')
 
-export const createAuction = async (nftAddress, id, minPrice, buyNowPrice, date) => {
-    window.contract = await new web3.eth.Contract(abi, address)
-    const duration = new Date(date).valueOf() - Date.now()
-    const WeiMinPrice = web3.utils.toWei(minPrice, 'ether')
-    const WeiBuyNow = web3.utils.toWei(buyNowPrice, 'ether')
-    console.log(duration, WeiMinPrice, WeiBuyNow)
-    const txParams = {
-        to: address,
-        from: window.ethereum.selectedAddress,
-        data: window.contract.methods.createNFTAuction(nftAddress, id, WeiMinPrice, WeiBuyNow, duration, false).encodeABI(),
-      }
-    
-      try {
-        await window.ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [txParams, 'latest'],
-        })
-        return {
-          status: 'Transaction Successful. Refresh in a moment',
-        }
-      } catch (error) {
-        return {
-          status: 'Transaction Failed' + error.message,
-        }
-      }
+export const createAuction = async (
+  nftAddress,
+  id,
+  minPrice,
+  buyNowPrice,
+  date,
+) => {
+  window.contract = await new web3.eth.Contract(abi, address)
+  const duration = new Date(date).valueOf() - Date.now()
+  const WeiMinPrice = web3.utils.toWei(minPrice, 'ether')
+  const WeiBuyNow = web3.utils.toWei(buyNowPrice, 'ether')
+  console.log(duration, WeiMinPrice, WeiBuyNow)
+  const txParams = {
+    to: address,
+    from: window.ethereum.selectedAddress,
+    data: window.contract.methods
+      .createNFTAuction(nftAddress, id, WeiMinPrice, WeiBuyNow, duration, false)
+      .encodeABI(),
+  }
+
+  try {
+    await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [txParams, 'latest'],
+    })
+    return {
+      status: 'Transaction Successful. Refresh in a moment',
+    }
+  } catch (error) {
+    return {
+      status: 'Transaction Failed' + error.message,
+    }
+  }
+}
+
+export const getAuction = async (contractAddress, id) => {
+  window.contract = await new web3.eth.Contract(abi, address)
+  const auction = await window.contract.methods
+    .nftContractAuctions(contractAddress, id)
+    .call()
+  console.log(auction)
+  return auction
 }
 
 export const bidAuction = async (id, amount) => {
-    if (parseFloat(amount) <= 0) {
-        return {
-          status: 'Please enter a valid amount',
-        }
-      }
-    const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
-    window.contract = await new web3.eth.Contract(abi, address)
-    const txParams = {
-        to: address,
-        from: window.ethereum.selectedAddress,
-        value: WeiAmount,
-        data: window.contract.methods.createNFTAuction(id).encodeABI(),
-      }
-    
-      try {
-        await window.ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [txParams, 'latest'],
-        })
-        return {
-          status: 'Transaction Successful. Refresh in a moment',
-        }
-      } catch (error) {
-        return {
-          status: 'Transaction Failed' + error.message,
-        }
-      }
+  if (parseFloat(amount) <= 0) {
+    return {
+      status: 'Please enter a valid amount',
+    }
+  }
+  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+    to: address,
+    from: window.ethereum.selectedAddress,
+    value: WeiAmount,
+    data: window.contract.methods.createNFTAuction(id).encodeABI(),
+  }
+
+  try {
+    await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [txParams, 'latest'],
+    })
+    return {
+      status: 'Transaction Successful. Refresh in a moment',
+    }
+  } catch (error) {
+    return {
+      status: 'Transaction Failed' + error.message,
+    }
+  }
 }
 
 export const withdrawAuctionBid = async (nftAddress, id) => {
-    window.contract = await new web3.eth.Contract(abi, address)
-    const txParams = {
-        to: address,
-        from: window.ethereum.selectedAddress,
-        data: window.contract.methods.withdrawBid(nftAddress, id).encodeABI(),
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+    to: address,
+    from: window.ethereum.selectedAddress,
+    data: window.contract.methods.withdrawBid(nftAddress, id).encodeABI(),
+  }
+  try {
+    await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [txParams, 'latest'],
+    })
+    return {
+      status: 'Transaction Successful. Refresh in a moment',
     }
-    try {
-        await window.ethereum.request({
-            method: 'eth_sendTransaction',
-            params: [txParams, 'latest'],
-        })
-        return {
-            status: 'Transaction Successful. Refresh in a moment',
-        }
-    } catch (error) {
-        return {
-            status: 'Transaction Failed' + error.message,
-        }
+  } catch (error) {
+    return {
+      status: 'Transaction Failed' + error.message,
     }
+  }
 }
 
 export const setBankContract = async (bankAddress) => {
-    window.contract = await new web3.eth.Contract(abi, address)
-    const txParams = {
-        to: address,
-        from: window.ethereum.selectedAddress,
-        data: window.contract.methods.setBankContractAddress(bankAddress).encodeABI(),
-      }
-    
-      try {
-        await window.ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [txParams, 'latest'],
-        })
-        return {
-          status: 'Transaction Successful. Refresh in a moment',
-        }
-      } catch (error) {
-        return {
-          status: 'Transaction Failed' + error.message,
-        }
-      }
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+    to: address,
+    from: window.ethereum.selectedAddress,
+    data: window.contract.methods
+      .setBankContractAddress(bankAddress)
+      .encodeABI(),
+  }
+
+  try {
+    await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [txParams, 'latest'],
+    })
+    return {
+      status: 'Transaction Successful. Refresh in a moment',
+    }
+  } catch (error) {
+    return {
+      status: 'Transaction Failed' + error.message,
+    }
+  }
 }
 
 export const auctionCancel = async (nftAddress, id) => {
-    window.contract = await new web3.eth.Contract(abi, address)
-    const txParams = {
-        to: address,
-        from: window.ethereum.selectedAddress,
-        data: window.contract.methods.cancelAuction(nftAddress, id).encodeABI(),
-      }
-    
-      try {
-        await window.ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [txParams, 'latest'],
-        })
-        return {
-          status: 'Transaction Successful. Refresh in a moment',
-        }
-      } catch (error) {
-        return {
-          status: 'Transaction Failed' + error.message,
-        }
-      }
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+    to: address,
+    from: window.ethereum.selectedAddress,
+    data: window.contract.methods.cancelAuction(nftAddress, id).encodeABI(),
+  }
+
+  try {
+    await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [txParams, 'latest'],
+    })
+    return {
+      status: 'Transaction Successful. Refresh in a moment',
+    }
+  } catch (error) {
+    return {
+      status: 'Transaction Failed' + error.message,
+    }
+  }
 }
 
 export const takeHighestBid = async (nftAddress, id) => {
-    window.contract = await new web3.eth.Contract(abi, address)
-    const txParams = {
-        to: address,
-        from: window.ethereum.selectedAddress,
-        data: window.contract.methods.cancelAuction(nftAddress, id).encodeABI(),
-      }
-    
-      try {
-        await window.ethereum.request({
-          method: 'eth_sendTransaction',
-          params: [txParams, 'latest'],
-        })
-        return {
-          status: 'Transaction Successful. Refresh in a moment',
-        }
-      } catch (error) {
-        return {
-          status: 'Transaction Failed' + error.message,
-        }
-      }
+  window.contract = await new web3.eth.Contract(abi, address)
+  const txParams = {
+    to: address,
+    from: window.ethereum.selectedAddress,
+    data: window.contract.methods.cancelAuction(nftAddress, id).encodeABI(),
+  }
+
+  try {
+    await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [txParams, 'latest'],
+    })
+    return {
+      status: 'Transaction Successful. Refresh in a moment',
+    }
+  } catch (error) {
+    return {
+      status: 'Transaction Failed' + error.message,
+    }
+  }
 }

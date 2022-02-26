@@ -32,7 +32,8 @@ contract Bank {
         address indexed from,
         address indexed to,
         uint256 amount,
-        uint256 balance,
+        uint256 balanceSender,
+        uint256 balanceReceiver,
         uint256 timestamp
     );
 
@@ -103,6 +104,7 @@ contract Bank {
             beneficiary,
             amount,
             balance[msg.sender],
+            balance[beneficiary],
             block.timestamp
         );
     }

@@ -15,6 +15,8 @@ import { Link, useParams } from 'react-router-dom'
 
 import { getNftTransactionHistory } from '../utils/nftFunctions'
 
+import { getAuction } from '../utils/auctionFunctions'
+
 import {
   FaAlignJustify,
   FaAlignLeft,
@@ -61,11 +63,13 @@ function NFTDescription({ wallet }) {
   const [showOffers, setOffers] = useState(false)
   const [showDetails, setDetails] = useState(false)
   const [txnHistory, setTxnHistory] = useState([])
+  const [auction, setAuction] = useState({})
   useEffect(() => {
     async function getNft() {
       const nft = await getNftData(contractAddress, tokenId)
       const txnHistory = await getTnxs(contractAddress, tokenId)
-      console.log(txnHistory)
+      const actionDetails = await getAuction(contractAddress, tokenId)
+      setAuction(actionDetails)
       setNFT(nft)
       setTxnHistory(txnHistory)
     }
@@ -74,25 +78,30 @@ function NFTDescription({ wallet }) {
   return (
     <div style={{ paddingTop: '10px' }}>
       <Container>
-        <div style={{ justifyContent: 'flex-end', display: 'flex' }}>
-          <span style={{ marginRight: '20px' }}>
-            <Button
-              variant="primary"
-              size="lg"
-              style={{ paddingInline: '20px' }}
-              href={`/nft/${contractAddress}/${tokenId}/sell`}
-            >
-              Sell
-            </Button>
-            <Button
-              variant="primary"
-              size="lg"
-              style={{ paddingInline: '20px' }}
-            >
-              Close Auction
-            </Button>
-          </span>
-        </div>
+        {NFT.owner && NFT.owner.address === wallet && (
+          <div style={{ justifyContent: 'flex-end', display: 'flex' }}>
+            <span style={{ marginRight: '20px' }}>
+              {auction.minPrice > 0 ? (
+                <Button
+                  variant="primary"
+                  size="lg"
+                  style={{ paddingInline: '20px' }}
+                >
+                  Close Auction
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  size="lg"
+                  style={{ paddingInline: '20px' }}
+                  href={`/nft/${contractAddress}/${tokenId}/sell`}
+                >
+                  Sell
+                </Button>
+              )}
+            </span>
+          </div>
+        )}
         <Row>
           <Col sm={12} lg={4} xl={4}>
             <div className="itemSummary">
@@ -197,7 +206,12 @@ function NFTDescription({ wallet }) {
                         <Link
                           to={`/nft/transfer/${contractAddress}/${tokenId}`}
                         >
-                          <FaGift style={{ fontSize: '25px', color: 'rgb(53, 56, 64)' }} />
+                          <FaGift
+                            style={{
+                              fontSize: '25px',
+                              color: 'rgb(53, 56, 64)',
+                            }}
+                          />
                         </Link>
                       </div>
                     </div>
@@ -227,83 +241,180 @@ function NFTDescription({ wallet }) {
                 </a>
               </div>
             </section>
-            <section id='buyerSection'>
-              <div className="itemFrame">
-                <div className="basePanel">
-                  <div className="basePanelHeader" style={{ display: 'flex', justifyContent: 'space-between', color: 'rgb(112, 122, 131)' }}>
-                    <span>
-                      <FaClock />
-                      <span style={{ marginLeft: '15px', fontWeight: '400' }}>Sale Ends date</span>
-                    </span>
-                  </div>
-                  <div className="basePanelBody">
-                    <div className="panelContainer">
-                      <div className="panelContent">
-                          <div className="priceHistoryContainer" style={{display: 'flex', justifyContent: 'space-between'}}>
+            {auction.minPrice > 0 && (
+              <section id="buyerSection">
+                <div className="itemFrame">
+                  <div className="basePanel">
+                    <div
+                      className="basePanelHeader"
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        color: 'rgb(112, 122, 131)',
+                      }}
+                    >
+                      <span>
+                        <FaClock />
+                        <span style={{ marginLeft: '15px', fontWeight: '400' }}>
+                          Sale Ends on{' '}
+                          {new Date(
+                            auction.auctionEndTimestamp * 1000,
+                          ).toLocaleDateString('en-IN')}
+                        </span>
+                      </span>
+                    </div>
+                    <div className="basePanelBody">
+                      <div className="panelContainer">
+                        <div className="panelContent">
+                          <div
+                            className="priceHistoryContainer"
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-between',
+                            }}
+                          >
                             <div>
-                              <div style={{color: 'rgb(112, 122, 131)'}}>Minimum Price</div>
+                              <div style={{ color: 'rgb(112, 122, 131)' }}>
+                                Minimum Price
+                              </div>
                               <div>
-                                <div className='priceContainer'>
+                                <div className="priceContainer">
                                   <img
-                                    style={{ height: '25px', marginRight: '5px' }}
+                                    style={{
+                                      height: '25px',
+                                      marginRight: '5px',
+                                    }}
                                     src={eth}
                                   ></img>
-                                  <div className='priceAmount' style={{ fontSize: '30px', fontWeight: '600', marginLeft: '0.3em'}}>0.371</div>
+                                  <div
+                                    className="priceAmount"
+                                    style={{
+                                      fontSize: '30px',
+                                      fontWeight: '600',
+                                      marginLeft: '0.3em',
+                                    }}
+                                  >
+                                    0.371
+                                  </div>
                                 </div>
-                                <div className='priceINR'>
-                                  <div className='priceAmount' style={{ color: 'rgb(112, 122, 131)', fontSize: '15px', fontWeight: 'normal'}}>
+                                <div className="priceINR">
+                                  <div
+                                    className="priceAmount"
+                                    style={{
+                                      color: 'rgb(112, 122, 131)',
+                                      fontSize: '15px',
+                                      fontWeight: 'normal',
+                                    }}
+                                  >
                                     (INR 46000)
                                   </div>
                                 </div>
                               </div>
                             </div>
                             <div>
-                              <div style={{color: 'rgb(112, 122, 131)'}}>Highest Bid</div>
+                              <div style={{ color: 'rgb(112, 122, 131)' }}>
+                                Highest Bid
+                              </div>
                               <div>
-                                <div className='priceContainer'>
+                                <div className="priceContainer">
                                   <img
-                                    style={{ height: '25px', marginRight: '5px' }}
+                                    style={{
+                                      height: '25px',
+                                      marginRight: '5px',
+                                    }}
                                     src={eth}
                                   ></img>
-                                  <div className='priceAmount' style={{ fontSize: '30px', fontWeight: '600', marginLeft: '0.3em'}}>0.381</div>
+                                  <div
+                                    className="priceAmount"
+                                    style={{
+                                      fontSize: '30px',
+                                      fontWeight: '600',
+                                      marginLeft: '0.3em',
+                                    }}
+                                  >
+                                    0.381
+                                  </div>
                                 </div>
-                                <div className='priceINR'>
-                                  <div className='priceAmount' style={{ color: 'rgb(112, 122, 131)', fontSize: '15px', fontWeight: 'normal'}}>
+                                <div className="priceINR">
+                                  <div
+                                    className="priceAmount"
+                                    style={{
+                                      color: 'rgb(112, 122, 131)',
+                                      fontSize: '15px',
+                                      fontWeight: 'normal',
+                                    }}
+                                  >
                                     (INR 47000)
                                   </div>
                                 </div>
                               </div>
                             </div>
                             <div>
-                              <div style={{color: 'rgb(112, 122, 131)'}}>Buy Now Price</div>
+                              <div style={{ color: 'rgb(112, 122, 131)' }}>
+                                Buy Now Price
+                              </div>
                               <div>
-                                <div className='priceContainer'>
+                                <div className="priceContainer">
                                   <img
-                                    style={{ height: '25px', marginRight: '5px' }}
+                                    style={{
+                                      height: '25px',
+                                      marginRight: '5px',
+                                    }}
                                     src={eth}
                                   ></img>
-                                  <div className='priceAmount' style={{ fontSize: '30px', fontWeight: '600', marginLeft: '0.3em'}}>0.450</div>
+                                  <div
+                                    className="priceAmount"
+                                    style={{
+                                      fontSize: '30px',
+                                      fontWeight: '600',
+                                      marginLeft: '0.3em',
+                                    }}
+                                  >
+                                    0.450
+                                  </div>
                                 </div>
-                                <div className='priceINR'>
-                                  <div className='priceAmount' style={{ color: 'rgb(112, 122, 131)', fontSize: '15px', fontWeight: 'normal'}}>
+                                <div className="priceINR">
+                                  <div
+                                    className="priceAmount"
+                                    style={{
+                                      color: 'rgb(112, 122, 131)',
+                                      fontSize: '15px',
+                                      fontWeight: 'normal',
+                                    }}
+                                  >
                                     (INR 53000)
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <div> 
-                            <div style={{display: 'flex',justifyContent: 'initial', marginTop: '2%'}}>
-                              <Button variant="primary" size='lg'>Buy Now</Button>
-                              <Button variant="outline-primary" size='lg' style={{ marginLeft: '2%'}}>Place Bid</Button>
-                            </div>   
+                          <div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'initial',
+                                marginTop: '2%',
+                              }}
+                            >
+                              <Button variant="primary" size="lg">
+                                Buy Now
+                              </Button>
+                              <Button
+                                variant="outline-primary"
+                                size="lg"
+                                style={{ marginLeft: '2%' }}
+                              >
+                                Place Bid
+                              </Button>
+                            </div>
                           </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </section>
+              </section>
+            )}
             <div className="itemFrame">
               <div className="basePanel">
                 <button
