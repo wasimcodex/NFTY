@@ -1,19 +1,13 @@
 import React from 'react';
-import Modal from 'react-bootstrap/Modal';
 import {
   Button,
-  Container,
+  Modal,
   FormControl,
   InputGroup,
   Col,
   Form,
-  Card,
   Row,
-  Alert,
 } from 'react-bootstrap'
-import ModalHeader from 'react-bootstrap/ModalHeader';
-import ModalTitle from 'react-bootstrap/ModalTitle';
-import ModalBody from 'react-bootstrap/ModalBody';
 
 function PlaceBidModal(props) {
   return (
@@ -25,19 +19,44 @@ function PlaceBidModal(props) {
   >
     <Modal.Header closeButton>
       <Modal.Title id="contained-modal-title-vcenter">
-        Modal heading
+        Place Bid
       </Modal.Title>
     </Modal.Header>
     <Modal.Body>
-      <h4>Centered Modal</h4>
-      <p>
-        Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-        dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-        consectetur ac, vestibulum at eros.
-      </p>
+    <Form>
+      <Form.Group as={Row} className="mb-3" controlId="emi_amount">
+        <Row>
+          <Col>
+            <Form.Label>
+              Enter your bid amount
+            </Form.Label>
+          </Col>
+          <Col>
+            <InputGroup>
+              <FormControl
+                placeholder="Amount in INR"
+                type="number"
+              />
+              <InputGroup.Text>INR</InputGroup.Text>
+            </InputGroup>
+          </Col>
+          <Col>
+            <InputGroup>
+              <FormControl
+                placeholder="Amount in ETH"
+                type="number"
+                readOnly
+              />
+              <InputGroup.Text>ETH</InputGroup.Text>
+            </InputGroup>
+          </Col>
+        </Row>
+      </Form.Group>
+    </Form>
     </Modal.Body>
     <Modal.Footer>
-      <Button onClick={props.onHide}>Close</Button>
+      <Button variant="success">Confirm</Button>
+      <Button variant="danger" onClick={props.onHide}>Cancel</Button>
     </Modal.Footer>
   </Modal>
   )
