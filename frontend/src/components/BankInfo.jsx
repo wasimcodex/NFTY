@@ -362,7 +362,7 @@ const BankInfo = ({ onAccoutChange }) => {
                               <td>
                                 {new Date(
                                   transaction.returnValues.timestamp * 1000,
-                                ).toLocaleDateString('en-US')}
+                                ).toLocaleDateString('en-IN')}
                               </td>
                             </tr>
                           ))}
