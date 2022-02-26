@@ -33,6 +33,8 @@ import {
 import noChartData from '../assets/no-chart-data.svg'
 import emptyAsks from '../assets/empty-asks.svg'
 import emptyBids from '../assets/empty-bids.svg'
+import PlaceBidModal from './PlaceBidModal'
+import BuyNowModal from './BuyNowModal'
 
 const axios = require('axios')
 
@@ -64,11 +66,15 @@ function NFTDescription({ wallet }) {
   const [showDetails, setDetails] = useState(false)
   const [txnHistory, setTxnHistory] = useState([])
   const [auction, setAuction] = useState({})
+  const [modalShow, setModalShow] = useState(false)
+  const [buyNowModalShow, setBuyNowModalShow] = useState(false)
+
   useEffect(() => {
     async function getNft() {
       const nft = await getNftData(contractAddress, tokenId)
       const txnHistory = await getTnxs(contractAddress, tokenId)
       const actionDetails = await getAuction(contractAddress, tokenId)
+      console.log(actionDetails)
       setAuction(actionDetails)
       setNFT(nft)
       setTxnHistory(txnHistory)
@@ -396,16 +402,29 @@ function NFTDescription({ wallet }) {
                                 marginTop: '2%',
                               }}
                             >
-                              <Button variant="primary" size="lg">
+                              <Button 
+                                variant="primary"
+                                size="lg"
+                                onClick={() => setBuyNowModalShow(true)}
+                              >
                                 Buy Now
                               </Button>
                               <Button
                                 variant="outline-primary"
                                 size="lg"
                                 style={{ marginLeft: '2%' }}
+                                onClick={() => setModalShow(true)}
                               >
                                 Place Bid
                               </Button>
+                              <PlaceBidModal
+                                show={modalShow}
+                                onHide={() => setModalShow(false)}
+                              />
+                              <BuyNowModal
+                                show={buyNowModalShow}
+                                onHide={() => setBuyNowModalShow(false)}
+                              />
                             </div>
                           </div>
                         </div>
