@@ -303,69 +303,72 @@ const BankInfo = ({ onAccoutChange }) => {
                           </tr>
                         </thead>
                         <tbody>
-                          {transactions.map((transaction, index) => (
-                            <tr key={index}>
-                              <td>{transaction.event}</td>
-                              <td>
-                                {(
-                                  transaction.returnValues.amount /
-                                  Math.pow(10, 18)
-                                ).toFixed(4)}
-                              </td>
-                              <td>
-                                {transaction.event === 'Transfer'
-                                  ? transaction.returnValues.from
-                                      .slice(2, 8)
-                                      .toUpperCase()
-                                  : transaction.event === 'Deposit'
-                                  ? 'Wallet'
-                                  : 'Self'}
-                              </td>
-                              <td>
-                                {transaction.event === 'Transfer'
-                                  ? transaction.returnValues.to
-                                      .slice(2, 8)
-                                      .toUpperCase()
-                                  : transaction.event === 'Withdraw'
-                                  ? 'Wallet'
-                                  : 'Self'}
-                              </td>
-                              {transaction.event === 'Transfer' &&
-                                transaction.returnValues.from.toLowerCase() ===
-                                  window.ethereum.selectedAddress && (
-                                  <td>
-                                    {(
-                                      transaction.returnValues.balanceSender /
-                                      Math.pow(10, 18)
-                                    ).toFixed(4)}
-                                  </td>
-                                )}
-                              {transaction.event === 'Transfer' &&
-                                transaction.returnValues.to.toLowerCase() ===
-                                  window.ethereum.selectedAddress && (
-                                  <td>
-                                    {(
-                                      transaction.returnValues.balanceReceiver /
-                                      Math.pow(10, 18)
-                                    ).toFixed(4)}
-                                  </td>
-                                )}
-                              {(transaction.event === 'Deposit' ||
-                                transaction.event === 'Withdraw') && (
+                          {transactions
+                            .slice(0)
+                            .reverse()
+                            .map((transaction, index) => (
+                              <tr key={index}>
+                                <td>{transaction.event}</td>
                                 <td>
                                   {(
-                                    transaction.returnValues.balance /
+                                    transaction.returnValues.amount /
                                     Math.pow(10, 18)
                                   ).toFixed(4)}
                                 </td>
-                              )}
-                              <td>
-                                {new Date(
-                                  transaction.returnValues.timestamp * 1000,
-                                ).toLocaleDateString('en-IN')}
-                              </td>
-                            </tr>
-                          ))}
+                                <td>
+                                  {transaction.event === 'Transfer'
+                                    ? transaction.returnValues.from
+                                        .slice(2, 8)
+                                        .toUpperCase()
+                                    : transaction.event === 'Deposit'
+                                    ? 'Wallet'
+                                    : 'Self'}
+                                </td>
+                                <td>
+                                  {transaction.event === 'Transfer'
+                                    ? transaction.returnValues.to
+                                        .slice(2, 8)
+                                        .toUpperCase()
+                                    : transaction.event === 'Withdraw'
+                                    ? 'Wallet'
+                                    : 'Self'}
+                                </td>
+                                {transaction.event === 'Transfer' &&
+                                  transaction.returnValues.from.toLowerCase() ===
+                                    window.ethereum.selectedAddress && (
+                                    <td>
+                                      {(
+                                        transaction.returnValues.balanceSender /
+                                        Math.pow(10, 18)
+                                      ).toFixed(4)}
+                                    </td>
+                                  )}
+                                {transaction.event === 'Transfer' &&
+                                  transaction.returnValues.to.toLowerCase() ===
+                                    window.ethereum.selectedAddress && (
+                                    <td>
+                                      {(
+                                        transaction.returnValues
+                                          .balanceReceiver / Math.pow(10, 18)
+                                      ).toFixed(4)}
+                                    </td>
+                                  )}
+                                {(transaction.event === 'Deposit' ||
+                                  transaction.event === 'Withdraw') && (
+                                  <td>
+                                    {(
+                                      transaction.returnValues.balance /
+                                      Math.pow(10, 18)
+                                    ).toFixed(4)}
+                                  </td>
+                                )}
+                                <td>
+                                  {new Date(
+                                    transaction.returnValues.timestamp * 1000,
+                                  ).toLocaleDateString('en-IN')}
+                                </td>
+                              </tr>
+                            ))}
                         </tbody>
                       </Table>
                     </div>
