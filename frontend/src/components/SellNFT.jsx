@@ -11,7 +11,8 @@ import {
   Row,
   Alert,
 } from 'react-bootstrap'
-import imagePlaceholder from '../assets/image-placeholder.png'
+import imagePlaceholder from '../assets/image-placeholder.png';
+import eth from '../assets/eth.svg';
 import {useParams} from 'react-router-dom'
 import {exchangeRate} from '../utils/bankFunctions';
 import {createAuction} from '../utils/auctionFunctions';
@@ -156,12 +157,14 @@ function SellNFT({ wallet }) {
                   <Card.Img variant="bottom" src={NFT.image_url} />
                   <Card.Body>
                     <div style={{display: 'flex',justifyContent: 'space-between'}}>
-                      <Card.Subtitle className="mb-2 text-muted">Collection name</Card.Subtitle>
-                      <Card.Subtitle className="mb-2 text-muted">Price</Card.Subtitle>
-                    </div>
-                    <div style={{display: 'flex',justifyContent: 'space-between'}}>
-                      <Card.Title>{NFT.name}</Card.Title>
-                      <Card.Title>0 ETH</Card.Title>
+                      <Card.Subtitle>{NFT.name}</Card.Subtitle>
+                      <Card.Subtitle>
+                        <img
+                            style={{ height: '20px', marginRight: '5px' }}
+                            src={eth}
+                        ></img>
+                        <strong>0.5</strong>
+                      </Card.Subtitle>
                     </div>        
                   </Card.Body>
                 </Card>

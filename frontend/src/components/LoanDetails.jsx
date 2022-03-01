@@ -151,6 +151,18 @@ function LoanDetails() {
               <div>
                 <Card>
                   <Card.Img variant="bottom" src={imagePlaceholder} />
+                  <Card.Body>
+                    <div style={{display: 'flex',justifyContent: 'space-between'}}>
+                      <Card.Subtitle>Name</Card.Subtitle>
+                      <Card.Subtitle>
+                        <img
+                          style={{ height: '20px', marginRight: '5px' }}
+                          src={eth}
+                        ></img>
+                        <strong>0.5</strong>
+                      </Card.Subtitle>
+                    </div>  
+                  </Card.Body>
                 </Card>
               </div>
               <div

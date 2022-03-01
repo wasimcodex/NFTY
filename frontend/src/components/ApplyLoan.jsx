@@ -13,6 +13,7 @@ import {
 } from 'react-bootstrap';
 import Explore from './Explore';
 import imagePlaceholder from '../assets/image-placeholder.png';
+import eth from '../assets/eth.svg';
 import LoanConfirmModal from './LoanConfirmModal';
 
 function ApplyLoan() {
@@ -153,12 +154,14 @@ function ApplyLoan() {
                   <Card.Img variant="bottom" src={imagePlaceholder} />
                   <Card.Body>
                     <div style={{display: 'flex',justifyContent: 'space-between'}}>
-                      <Card.Subtitle className="mb-2 text-muted">Collection name</Card.Subtitle>
-                      <Card.Subtitle className="mb-2 text-muted">Price</Card.Subtitle>
-                    </div>
-                    <div style={{display: 'flex',justifyContent: 'space-between'}}>
-                      <Card.Title>Name</Card.Title>
-                      <Card.Title>0 ETH</Card.Title>
+                      <Card.Subtitle>Name</Card.Subtitle>
+                      <Card.Subtitle>
+                        <img
+                          style={{ height: '20px', marginRight: '5px' }}
+                          src={eth}
+                        ></img>
+                        <strong>0.5</strong>
+                      </Card.Subtitle>
                     </div>        
                   </Card.Body>
                 </Card>
