@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { useState, useEffect } from 'react';
 import {
   Button,
   Container,
@@ -12,8 +13,10 @@ import {
 } from 'react-bootstrap';
 import Explore from './Explore';
 import imagePlaceholder from '../assets/image-placeholder.png';
+import LoanConfirmModal from './LoanConfirmModal';
 
 function ApplyLoan() {
+  const [modalShow, setModalShow] = useState(false)
   return (
     <div>
       <Container>
@@ -128,7 +131,16 @@ function ApplyLoan() {
                 </Row>
               </Form.Group>
 
-              <Button variant="primary">Apply</Button>
+              <Button 
+                variant="primary" 
+                onClick={() => setModalShow(true)}
+              >
+                Apply
+              </Button>
+              <LoanConfirmModal
+                show={modalShow}
+                onHide={() => setModalShow(false)}
+              />
 
             </Form>
           </Col>
