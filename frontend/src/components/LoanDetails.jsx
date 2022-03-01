@@ -77,14 +77,7 @@ function LoanDetails() {
                 </Row>
               </div>
               <div style={{ marginTop: '20px'}}>
-                <Button 
-                  variant="primary" 
-                >
-                  Pay EMI
-                </Button>
-              </div>
-              <div style={{ marginTop: '20px'}}>
-                <div style={{ fontWeight: '600', color: 'rgb(4, 17, 29)', fontSize: '18px', marginBottom: '10px'}}>Pay Remaining Amount</div>
+                <div style={{ fontWeight: '600', color: 'rgb(4, 17, 29)', fontSize: '18px', marginBottom: '10px'}}>Payment Methods</div>
                 <Form>
                   <Form.Group as={Row} className="mb-3" controlId="paymentoptions">
                     <Col>
@@ -102,9 +95,15 @@ function LoanDetails() {
                       />
                     </Col> 
                   </Form.Group>
-                  <div style={{ marginTop: '20px'}}>
+                  <div style={{display: 'flex', marginTop: '20px'}}>
+                  <Button 
+                    variant="primary"
+                  >
+                    Pay EMI
+                  </Button>
                     <Button 
-                      variant="primary" 
+                      style={{ marginLeft: '2%' }}
+                      variant="outline-primary" 
                     >
                       Repay Loan
                     </Button>
