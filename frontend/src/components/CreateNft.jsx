@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Image, Row, Col, Form } from 'react-bootstrap'
+import { Button, Image, Row, Col, Form, Container } from 'react-bootstrap'
 import imgplaceholder from '../assets/image-placeholder.png'
 import { mintNFT } from '../utils/mintNFT'
 
@@ -33,45 +33,47 @@ export default function CreateNft() {
 
   return (
     <div>
-      <Form style={{ padding: '15px', marginTop: '20px' }}>
-        <Row xs={1} md={2}>
-          <Col style={{ textAlign: 'center' }}>
-            <Image
-              src={imgUri ? imgUri : imgplaceholder}
-              style={{ maxHeight: '300px' }}
-              fluid
-            ></Image>
-            <Form.Group controlId="formFile" className="mb-3 pt-3">
-              <Form.Control type="file" onChange={onImgUpload} />
-            </Form.Group>
-          </Col>
-          <Col>
-            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label>Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Eg: Ghost Lost in Space"
-                onChange={(e) => setName(e.target.value)}
-              />
-            </Form.Group>
-            <Form.Group
-              className="mb-3"
-              controlId="exampleForm.ControlTextarea1"
-            >
-              <Form.Label>Description</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </Form.Group>
-            <Button variant="primary" onClick={onMintPressed}>
-              Mint NFT
-            </Button>
-            <div id="status">{Status}</div>
-          </Col>
-        </Row>
-      </Form>
+      <Container>
+        <Form style={{ padding: '15px', marginTop: '20px' }}>
+          <Row xs={1} md={2}>
+            <Col style={{ textAlign: 'center' }}>
+              <Image
+                src={imgUri ? imgUri : imgplaceholder}
+                style={{ maxHeight: '300px' }}
+                fluid
+              ></Image>
+              <Form.Group controlId="formFile" className="mb-3 pt-3">
+                <Form.Control type="file" onChange={onImgUpload} />
+              </Form.Group>
+            </Col>
+            <Col>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  placeholder="Eg: Ghost Lost in Space"
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </Form.Group>
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlTextarea1"
+              >
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={3}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+              </Form.Group>
+              <Button variant="primary" onClick={onMintPressed}>
+                Mint NFT
+              </Button>
+              <div id="status">{Status}</div>
+            </Col>
+          </Row>
+        </Form>
+      </Container>
     </div>
   )
 }
