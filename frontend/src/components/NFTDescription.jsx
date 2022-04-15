@@ -15,7 +15,7 @@ import { Link, useParams } from 'react-router-dom'
 
 import { getNftTransactionHistory } from '../utils/nftFunctions'
 
-import { getAuction } from '../utils/auctionFunctions'
+import { auctionCancel, getAuction, withdrawAuctionBid } from '../utils/auctionFunctions'
 
 import {
   FaAlignJustify,
@@ -35,6 +35,7 @@ import emptyAsks from '../assets/empty-asks.svg'
 import emptyBids from '../assets/empty-bids.svg'
 import PlaceBidModal from './PlaceBidModal'
 import BuyNowModal from './BuyNowModal'
+import { exchangeRate } from '../utils/bankFunctions'
 
 const axios = require('axios')
 
@@ -68,19 +69,40 @@ function NFTDescription({ wallet }) {
   const [auction, setAuction] = useState({})
   const [modalShow, setModalShow] = useState(false)
   const [buyNowModalShow, setBuyNowModalShow] = useState(false)
+  const [exhRate, setExhRate] = useState(0)
+  const [minPriceINR, setMinPriceINR] = useState(0)
+  const [highestBidINR, setHighestBidINR] = useState(0)
+  const [buyNowINR, setBuyNowINR] = useState(0)
 
   useEffect(() => {
     async function getNft() {
       const nft = await getNftData(contractAddress, tokenId)
       const txnHistory = await getTnxs(contractAddress, tokenId)
+      setNFT(nft)
+      console.log(nft)
+      setTxnHistory(txnHistory)
       const actionDetails = await getAuction(contractAddress, tokenId)
+      const rate = await exchangeRate()
+      setExhRate(rate)
       console.log(actionDetails)
       setAuction(actionDetails)
-      setNFT(nft)
-      setTxnHistory(txnHistory)
     }
-    getNft()
+    getNft().then(() => {
+      setBuyNowINR(((auction.buyNowPrice / 1000000000000000000) / exhRate))
+      setMinPriceINR(((auction.minPrice / 1000000000000000000) / exhRate))
+      setHighestBidINR(((auction.highestBid / 1000000000000000000) / exhRate))
+    })
   }, [])
+
+
+
+  const withdrawAuction = async () => {
+    const nftAddress = contractAddress
+    const id = tokenId
+    const result = await auctionCancel(nftAddress, id)
+    alert(result.status)
+  }
+
   return (
     <div style={{ paddingTop: '10px' }}>
       <Container>
@@ -92,8 +114,9 @@ function NFTDescription({ wallet }) {
                   variant="primary"
                   size="lg"
                   style={{ paddingInline: '20px' }}
+                  onClick={withdrawAuction}
                 >
-                  Close Auction
+                  Cancel Auction
                 </Button>
               ) : (
                 <Button
@@ -239,9 +262,9 @@ function NFTDescription({ wallet }) {
                       ? wallet == NFT.owner.address
                         ? 'You'
                         : `${NFT.owner.address.slice(
-                            0,
-                            6,
-                          )}...${NFT.owner.address.slice(38)}`
+                          0,
+                          6,
+                        )}...${NFT.owner.address.slice(38)}`
                       : 'Unknown'}
                   </span>
                 </a>
@@ -300,7 +323,7 @@ function NFTDescription({ wallet }) {
                                       marginLeft: '0.3em',
                                     }}
                                   >
-                                    0.371
+                                    {auction.minPrice / 1000000000000000000}
                                   </div>
                                 </div>
                                 <div className="priceINR">
@@ -312,7 +335,7 @@ function NFTDescription({ wallet }) {
                                       fontWeight: 'normal',
                                     }}
                                   >
-                                    (INR 46000)
+                                    (INR {minPriceINR})
                                   </div>
                                 </div>
                               </div>
@@ -338,7 +361,7 @@ function NFTDescription({ wallet }) {
                                       marginLeft: '0.3em',
                                     }}
                                   >
-                                    0.381
+                                    {auction.highestBid / 1000000000000000000}
                                   </div>
                                 </div>
                                 <div className="priceINR">
@@ -350,7 +373,7 @@ function NFTDescription({ wallet }) {
                                       fontWeight: 'normal',
                                     }}
                                   >
-                                    (INR 47000)
+                                    (INR {highestBidINR})
                                   </div>
                                 </div>
                               </div>
@@ -376,7 +399,7 @@ function NFTDescription({ wallet }) {
                                       marginLeft: '0.3em',
                                     }}
                                   >
-                                    0.450
+                                    {auction.buyNowPrice / 1000000000000000000}
                                   </div>
                                 </div>
                                 <div className="priceINR">
@@ -388,45 +411,48 @@ function NFTDescription({ wallet }) {
                                       fontWeight: 'normal',
                                     }}
                                   >
-                                    (INR 53000)
+                                    (INR {buyNowINR})
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <div>
-                            <div
-                              style={{
-                                display: 'flex',
-                                justifyContent: 'initial',
-                                marginTop: '2%',
-                              }}
-                            >
-                              <Button 
-                                variant="primary"
-                                size="lg"
-                                onClick={() => setBuyNowModalShow(true)}
+                          {!(NFT.owner.address === wallet) && (
+                            <div>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'initial',
+                                  marginTop: '2%',
+                                }}
                               >
-                                Buy Now
-                              </Button>
-                              <Button
-                                variant="outline-primary"
-                                size="lg"
-                                style={{ marginLeft: '2%' }}
-                                onClick={() => setModalShow(true)}
-                              >
-                                Place Bid
-                              </Button>
-                              <PlaceBidModal
-                                show={modalShow}
-                                onHide={() => setModalShow(false)}
-                              />
-                              <BuyNowModal
-                                show={buyNowModalShow}
-                                onHide={() => setBuyNowModalShow(false)}
-                              />
+                                <Button
+                                  variant="primary"
+                                  size="lg"
+                                  onClick={() => setBuyNowModalShow(true)}
+                                >
+                                  Buy Now
+                                </Button>
+                                <Button
+                                  variant="outline-primary"
+                                  size="lg"
+                                  style={{ marginLeft: '2%' }}
+                                  onClick={() => setModalShow(true)}
+                                >
+                                  Place Bid
+                                </Button>
+                                <PlaceBidModal
+                                  show={modalShow}
+                                  onHide={() => setModalShow(false)}
+                                />
+                                <BuyNowModal
+                                  show={buyNowModalShow}
+                                  onHide={() => setBuyNowModalShow(false)}
+                                />
+
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                     </div>

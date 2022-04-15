@@ -44,11 +44,11 @@ export const getAuction = async (contractAddress, id) => {
   const auction = await window.contract.methods
     .nftContractAuctions(contractAddress, id)
     .call()
-  console.log(auction)
+
   return auction
 }
 
-export const bidAuction = async (id, amount) => {
+export const bidAuction = async (nftAddress, id, amount) => {
   if (parseFloat(amount) <= 0) {
     return {
       status: 'Please enter a valid amount',
@@ -60,7 +60,7 @@ export const bidAuction = async (id, amount) => {
     to: address,
     from: window.ethereum.selectedAddress,
     value: WeiAmount,
-    data: window.contract.methods.createNFTAuction(id).encodeABI(),
+    data: window.contract.methods.bid(nftAddress, id).encodeABI(),
   }
 
   try {
@@ -153,7 +153,7 @@ export const takeHighestBid = async (nftAddress, id) => {
   const txParams = {
     to: address,
     from: window.ethereum.selectedAddress,
-    data: window.contract.methods.cancelAuction(nftAddress, id).encodeABI(),
+    data: window.contract.methods.takeHighestBid(nftAddress, id).encodeABI(),
   }
 
   try {
