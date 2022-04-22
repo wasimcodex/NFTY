@@ -13,11 +13,11 @@ import {
 } from 'react-bootstrap'
 import imagePlaceholder from '../assets/image-placeholder.png';
 import eth from '../assets/eth.svg';
-import {useParams} from 'react-router-dom'
-import {exchangeRate} from '../utils/bankFunctions';
-import {createAuction} from '../utils/auctionFunctions';
-import {approveNft} from '../utils/nftApprove';
-const {address} = require('../artifacts/auction.json')
+import { useParams } from 'react-router-dom'
+import { exchangeRate } from '../utils/bankFunctions';
+import { createAuction } from '../utils/auctionFunctions';
+import { approveNft } from '../utils/nftApprove';
+const { address } = require('../artifacts/auction.json')
 
 const axios = require('axios');
 
@@ -54,20 +54,20 @@ function SellNFT({ wallet }) {
     getNft()
   }, [])
 
-  const handleInputINR = async(e) => {
+  const handleInputINR = async (e) => {
     setInputETH((e.target.value / exhRate).toFixed(8))
   }
 
-  const handleInputBuyNowPrice = async(e) => {
+  const handleInputBuyNowPrice = async (e) => {
     setBuyNowPrice((e.target.value / exhRate).toFixed(8))
   }
-  const auctionCreate = async() => {
+  const auctionCreate = async () => {
     const inputEthString = inputETH.toString()
     const buyNowPriceString = buyNowPrice.toString()
     const auctionEndDateString = auctionEndDate.toString()
     console.log(contractAddress, tokenId, inputEthString, buyNowPriceString, auctionEndDateString)
-    // const approveAuction = await approveNft(address, tokenId);
-    // console.log(approveAuction.status)
+    const approveAuction = await approveNft(address, tokenId);
+    console.log(approveAuction.status)
     const completeListing = await createAuction(contractAddress, tokenId, inputEthString, buyNowPriceString, auctionEndDate)
     setResponse(completeListing.status)
   }
@@ -81,23 +81,23 @@ function SellNFT({ wallet }) {
             <div className='sellOptions'>
               <p className='text'>Price</p>
               <div classsName='options'>
-                  <InputGroup>
-                    <FormControl
-                      placeholder="Enter Amount in INR"
-                      type="number"
-                      onChange={handleInputINR}
-                    />
-                    <InputGroup.Text>INR</InputGroup.Text>
-                  </InputGroup>
-                  <InputGroup>
-                    <FormControl
-                      placeholder="ETH Equivalent"
-                      type="number"
-                      value={inputETH > 0 ? inputETH : ''}
-                      readOnly
-                    />
-                    <InputGroup.Text>ETH</InputGroup.Text>
-                  </InputGroup>
+                <InputGroup>
+                  <FormControl
+                    placeholder="Enter Amount in INR"
+                    type="number"
+                    onChange={handleInputINR}
+                  />
+                  <InputGroup.Text>INR</InputGroup.Text>
+                </InputGroup>
+                <InputGroup>
+                  <FormControl
+                    placeholder="ETH Equivalent"
+                    type="number"
+                    value={inputETH > 0 ? inputETH : ''}
+                    readOnly
+                  />
+                  <InputGroup.Text>ETH</InputGroup.Text>
+                </InputGroup>
               </div>
             </div>
             <div className='sellOptions'>
@@ -106,40 +106,40 @@ function SellNFT({ wallet }) {
                 <Row>
                   <Col>
                     <Form.Label size="lg">End Date</Form.Label>
-                    <Form.Control size="lg" type="date" onChange={e => setAuctionEndDate(e.target.value)}/>
+                    <Form.Control size="lg" type="date" onChange={e => setAuctionEndDate(e.target.value)} />
                   </Col>
                 </Row>
               </div>
             </div>
             <div className='sellOptions'>
-            <p className='text'>Add Buy Now Price</p>
+              <p className='text'>Add Buy Now Price</p>
               <div classsName='options'>
-              <InputGroup>
-                    <FormControl
-                      placeholder="Enter Amount in INR"
-                      type="number"
-                      onChange={handleInputBuyNowPrice}
-                    />
-                    <InputGroup.Text>INR</InputGroup.Text>
-                  </InputGroup>
-                  <InputGroup>
-                    <FormControl
-                      placeholder="ETH Equivalent"
-                      type="number"
-                      value={buyNowPrice > 0 ? buyNowPrice : ''}
-                      readOnly
-                    />
-                    <InputGroup.Text>ETH</InputGroup.Text>
-                  </InputGroup>
+                <InputGroup>
+                  <FormControl
+                    placeholder="Enter Amount in INR"
+                    type="number"
+                    onChange={handleInputBuyNowPrice}
+                  />
+                  <InputGroup.Text>INR</InputGroup.Text>
+                </InputGroup>
+                <InputGroup>
+                  <FormControl
+                    placeholder="ETH Equivalent"
+                    type="number"
+                    value={buyNowPrice > 0 ? buyNowPrice : ''}
+                    readOnly
+                  />
+                  <InputGroup.Text>ETH</InputGroup.Text>
+                </InputGroup>
               </div>
             </div>
             <div className='sellOptions'>
               <p className='text'>Fees</p>
               <div classsName='options'>
-                <div style={{display: 'flex',justifyContent: 'space-between'}}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>Service Fee</span>
                   <span>2.5%</span>
-                </div>   
+                </div>
               </div>
             </div>
             <div className='sellOptions'>
@@ -156,16 +156,16 @@ function SellNFT({ wallet }) {
                 <Card>
                   <Card.Img variant="bottom" src={NFT.image_url} />
                   <Card.Body>
-                    <div style={{display: 'flex',justifyContent: 'space-between'}}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Card.Subtitle>{NFT.name}</Card.Subtitle>
                       <Card.Subtitle>
                         <img
-                            style={{ height: '20px', marginRight: '5px' }}
-                            src={eth}
+                          style={{ height: '20px', marginRight: '5px' }}
+                          src={eth}
                         ></img>
                         <strong>0.5</strong>
                       </Card.Subtitle>
-                    </div>        
+                    </div>
                   </Card.Body>
                 </Card>
               </div>
@@ -173,13 +173,13 @@ function SellNFT({ wallet }) {
           </Col>
         </Row>
         {response && (
-              <Container>
-                <Row className="justify-content-center">
-                  <Col md="6">
-                    <Alert variant="info">{response}</Alert>
-                  </Col>
-                </Row>
-              </Container>
+          <Container>
+            <Row className="justify-content-center">
+              <Col md="6">
+                <Alert variant="info">{response}</Alert>
+              </Col>
+            </Row>
+          </Container>
         )}
       </Container>
     </div>);

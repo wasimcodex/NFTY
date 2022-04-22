@@ -7,6 +7,7 @@ import {
 import { bidAuction, getAuction } from '../utils/auctionFunctions'
 import { useParams } from 'react-router-dom'
 import { exchangeRate, nftAuction } from '../utils/bankFunctions';
+import { approveNft } from '../utils/nftApprove'
 
 const axios = require('axios');
 
@@ -43,7 +44,6 @@ function BuyNowModal(props) {
   }, [])
 
   const buyNow = async () => {
-
     const nftAddress = contractAddress
     const id = tokenId
     const bidAmount = (auction.buyNowPrice / 1000000000000000000).toString()
