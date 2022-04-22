@@ -49,6 +49,7 @@ function BuyNowModal(props) {
     const bidAmount = (auction.buyNowPrice / 1000000000000000000).toString()
     const bidNow = await bidAuction(nftAddress, id, bidAmount)
     alert(bidNow.status)
+    props.onHide()
   }
   return (
     <Modal
