@@ -82,10 +82,10 @@ function NFTDescription({ wallet }) {
       console.log(nft)
       setTxnHistory(txnHistory)
       const actionDetails = await getAuction(contractAddress, tokenId)
-      const rate = await exchangeRate()
-      setExhRate(rate)
       console.log(actionDetails)
       setAuction(actionDetails)
+      const rate = await exchangeRate()
+      setExhRate(rate)
     }
     getNft().then(() => {
       setBuyNowINR(((auction.buyNowPrice / 1000000000000000000) / exhRate))
@@ -93,8 +93,6 @@ function NFTDescription({ wallet }) {
       setHighestBidINR(((auction.highestBid / 1000000000000000000) / exhRate))
     })
   }, [])
-
-
 
   const withdrawAuction = async () => {
     const nftAddress = contractAddress
@@ -110,14 +108,25 @@ function NFTDescription({ wallet }) {
           <div style={{ justifyContent: 'flex-end', display: 'flex' }}>
             <span style={{ marginRight: '20px' }}>
               {auction.minPrice > 0 ? (
-                <Button
-                  variant="primary"
-                  size="lg"
-                  style={{ paddingInline: '20px' }}
-                  onClick={withdrawAuction}
-                >
-                  Cancel Auction
-                </Button>
+                <div>
+                  {auction.highestBid > 0 ? (
+                    <Button
+                    variant="outline-primary"
+                    size="lg"
+                    style={{ marginRight: '20px' }}
+                    >
+                    Take Highest Bid
+                    </Button>) : (<></>)
+                    }
+                  
+                  <Button
+                    variant="primary"
+                    size="lg"
+                    onClick={withdrawAuction}
+                  >
+                    Cancel Auction
+                  </Button>
+                </div>
               ) : (
                 <Button
                   variant="primary"
@@ -230,6 +239,7 @@ function NFTDescription({ wallet }) {
                 </div>
                 {NFT.owner ? (
                   wallet == NFT.owner.address ? (
+                    auction.minPrice == 0 ? (
                     <div className="itemCollectionToolbarWrapper">
                       <div className="buttonGrp">
                         <Link
@@ -249,7 +259,8 @@ function NFTDescription({ wallet }) {
                   )
                 ) : (
                   <></>
-                )}
+                ))
+              :(<></>)}
               </div>
               <h1 className="itemTitle">{NFT.name}</h1>
             </section>
@@ -286,9 +297,7 @@ function NFTDescription({ wallet }) {
                         <FaClock />
                         <span style={{ marginLeft: '15px', fontWeight: '400' }}>
                           Sale Ends on{' '}
-                          {new Date(
-                            auction.auctionEndTimestamp * 1000,
-                          ).toLocaleDateString('en-IN')}
+                          {new Date(auction.auctionEndTimestamp * 1000).getDate() + '/' + (new Date(auction.auctionEndTimestamp * 1000).getMonth() + 1) + '/' + new Date(auction.auctionEndTimestamp * 1000).getFullYear()}
                         </span>
                       </span>
                     </div>
@@ -335,7 +344,7 @@ function NFTDescription({ wallet }) {
                                       fontWeight: 'normal',
                                     }}
                                   >
-                                    (INR {minPriceINR})
+                                    {/* (INR {minPriceINR}) */}
                                   </div>
                                 </div>
                               </div>
@@ -373,7 +382,7 @@ function NFTDescription({ wallet }) {
                                       fontWeight: 'normal',
                                     }}
                                   >
-                                    (INR {highestBidINR})
+                                    {/* (INR {highestBidINR}) */}
                                   </div>
                                 </div>
                               </div>
@@ -411,7 +420,7 @@ function NFTDescription({ wallet }) {
                                       fontWeight: 'normal',
                                     }}
                                   >
-                                    (INR {buyNowINR})
+                                    {/* (INR {buyNowINR}) */}
                                   </div>
                                 </div>
                               </div>
