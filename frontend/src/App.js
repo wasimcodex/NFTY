@@ -47,7 +47,7 @@ function App() {
           <Profile />
         </Route>
         <Route path="/applyloan">
-          <ApplyLoan />
+          <ApplyLoan wallet={wallet} />
         </Route>
         <Route path="/loandetails">
           <LoanDetails />

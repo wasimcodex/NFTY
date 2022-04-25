@@ -11,13 +11,17 @@ const axios = require('axios')
 const { address } = require('../artifacts/nft-contract.json')
 
 //Gets NFT collections details (id, name, description, owner)
-const getNFTs = async () => {
+const getNFTs = async (owner) => {
   const data = await axios
     .get(
       `https://testnets-api.opensea.io/api/v1/assets?asset_contract_addresses=${address}&order_direction=desc&offset=0&limit=20`,
     )
     .then((res) => {
-      return res.data.assets
+      if (!owner) {
+        return res.data.assets
+      } else {
+        return res.data.assets.filter((nft) => nft.owner.address === owner)
+      }
     })
     .catch((err) => {
       console.log(err)
@@ -25,15 +29,15 @@ const getNFTs = async () => {
   return data
 }
 
-export default function Explore() {
+export default function Explore({ owner }) {
   const [NFTs, setNFTs] = useState([])
   useEffect(() => {
     async function getNfts() {
-      const nfts = await getNFTs()
+      const nfts = await getNFTs(owner)
       setNFTs(nfts)
     }
     getNfts()
-  }, [])
+  }, [owner])
 
   const [Status, setStatus] = useState('')
   return (
