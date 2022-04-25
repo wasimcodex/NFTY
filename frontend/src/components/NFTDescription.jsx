@@ -15,13 +15,14 @@ import { Link, useParams } from 'react-router-dom'
 
 import { getNftTransactionHistory } from '../utils/nftFunctions'
 
+import { address, abi } from '../artifacts/auction.json'
 import {
   auctionCancel,
   getAuction,
+  getAuctionBids,
+  takeHighestBid,
   withdrawAuctionBid,
 } from '../utils/auctionFunctions'
-
-import { address, abi } from '../artifacts/auction.json'
 
 import {
   FaAlignJustify,
@@ -83,6 +84,18 @@ const getTnxs = async (contractAddress, tokenId) => {
   return data
 }
 
+const getBids = async (contractAddress, tokenId) => {
+  const data = await getAuctionBids(contractAddress, tokenId)
+  const id = tokenId
+  const auctionBids = []
+  for (let i = 0; i < data.length; i++) {
+    if (id == data[i].returnValues.auctionId) {
+      auctionBids.push(data[i])
+    }
+  }
+  return auctionBids
+}
+
 function NFTDescription({ wallet }) {
   let { contractAddress, tokenId } = useParams()
   const [NFT, setNFT] = useState({})
@@ -91,6 +104,7 @@ function NFTDescription({ wallet }) {
   const [showOffers, setOffers] = useState(false)
   const [showDetails, setDetails] = useState(false)
   const [txnHistory, setTxnHistory] = useState([])
+  const [bids, setBids] = useState([])
   const [auction, setAuction] = useState({})
   const [modalShow, setModalShow] = useState(false)
   const [buyNowModalShow, setBuyNowModalShow] = useState(false)
@@ -108,6 +122,10 @@ function NFTDescription({ wallet }) {
       console.log(nft)
       console.log(getEvents)
       setTxnHistory(txnHistory)
+      console.log(txnHistory)
+      const bidHistory = await getBids(contractAddress, tokenId)
+      setBids(bidHistory)
+      console.log(bidHistory)
       const actionDetails = await getAuction(contractAddress, tokenId)
       console.log(actionDetails)
       setAuction(actionDetails)
@@ -128,6 +146,13 @@ function NFTDescription({ wallet }) {
     alert(result.status)
   }
 
+  const acceptHighestBid = async () => {
+    const nftAddress = contractAddress
+    const id = tokenId
+    const result = await takeHighestBid(nftAddress, id)
+    alert(result.status)
+  }
+
   return (
     <div style={{ paddingTop: '10px' }}>
       <Container>
@@ -141,6 +166,7 @@ function NFTDescription({ wallet }) {
                       variant="outline-primary"
                       size="lg"
                       style={{ marginRight: '20px' }}
+                      onClick={() => acceptHighestBid()}
                     >
                       Take Highest Bid
                     </Button>
@@ -556,9 +582,41 @@ function NFTDescription({ wallet }) {
                       <div className="panelContent">
                         <div className="priceHistoryContainer">
                           <div className="priceHistoryGraph">
-                            <img src={emptyAsks} />
+                            {bids && bids.length > 0 ? (
+                              <Table>
+                                <thead>
+                                  <tr>
+                                    <th>Bidder</th>
+                                    <th>Bid</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {bids &&
+                                    bids.map((bid, i) => (
+                                      <tr key={i}>
+                                        <td>
+                                          {bid.returnValues.bidder
+                                            .substring(2, 7)
+                                            .toUpperCase()}
+                                        </td>
+                                        <td>
+                                          {bid.returnValues.bid / 1e18} ETH
+                                        </td>
+                                      </tr>
+                                    ))}
+                                </tbody>
+                              </Table>
+                            ) : (
+                              <div>
+                                <div className="priceHistoryGraph">
+                                  <img src={emptyAsks} />
+                                </div>
+                                <div className="noOrdersText">
+                                  No listings yet
+                                </div>
+                              </div>
+                            )}
                           </div>
-                          <div className="noOrdersText">No listings yet</div>
                         </div>
                       </div>
                     </div>
@@ -566,7 +624,7 @@ function NFTDescription({ wallet }) {
                 )}
               </div>
             </div>
-            <div className="itemFrame">
+            {/* <div className="itemFrame">
               <div className="basePanel">
                 <button
                   className="basePanelHeader"
@@ -594,7 +652,7 @@ function NFTDescription({ wallet }) {
                   </div>
                 )}
               </div>
-            </div>
+            </div> */}
           </Col>
         </Row>
         <Row>

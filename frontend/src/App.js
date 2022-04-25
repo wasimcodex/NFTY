@@ -44,7 +44,7 @@ function App() {
           <SellNFT />
         </Route>
         <Route path="/profile">
-          <Profile />
+          <Profile wallet={wallet}/>
         </Route>
         <Route path="/applyloan">
           <ApplyLoan wallet={wallet} />
