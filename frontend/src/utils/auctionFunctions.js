@@ -170,3 +170,14 @@ export const takeHighestBid = async (nftAddress, id) => {
     }
   }
 }
+
+export const getAuctionBids = async () => {
+  window.contract = await new web3.eth.Contract(abi, address)
+  const allBids = await window.contract.getPastEvents("AuctionBid", {
+    fromBlock: 0,
+    toBlock: "latest",
+  });
+  console.log(allBids)
+  // console.log(window.ethereum.selectedAddress)
+  return allBids
+}
