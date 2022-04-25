@@ -512,35 +512,10 @@ function NFTDescription({ wallet }) {
                     <div className="panelContainer">
                       <div className="panelContent">
                         <div className="priceHistoryContainer">
-                          {bids && bids.length > 0 ? (
-                            <Table>
-                            <thead>
-                              <tr>
-                                <th>Bidder</th>
-                                <th>Bid</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {bids &&
-                                bids.map((bid, i) => (
-                                  <tr key={i}>
-                                    <td>{bid.returnValues.bidder.substring(2,7).toUpperCase()}</td>
-                                    <td>{bid.returnValues.bid/1e18} ETH</td>
-                                  </tr>
-                                ))}
-                            </tbody>
-                          </Table>
-                          ) : (
-                            <div>
-                              <div className="priceHistoryGraph">
-                                <img src={noChartData} />
-                              </div>
-                              <div className="noOrdersText">
-                                No item activity yet
-                              </div>
-                            </div>
-                          )}
-                          
+                          <div className='priceHistoryGraph'>
+                            <img src={noChartData} />
+                          </div>
+                          <div className="noOrdersText">No item activity yet</div>
                         </div>
                       </div>
                     </div>
@@ -567,9 +542,35 @@ function NFTDescription({ wallet }) {
                       <div className="panelContent">
                         <div className="priceHistoryContainer">
                           <div className="priceHistoryGraph">
-                            <img src={emptyAsks} />
-                          </div>
-                          <div className="noOrdersText">No listings yet</div>
+                            {bids && bids.length > 0 ? (
+                              <Table>
+                              <thead>
+                                <tr>
+                                  <th>Bidder</th>
+                                  <th>Bid</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {bids &&
+                                  bids.map((bid, i) => (
+                                    <tr key={i}>
+                                      <td>{bid.returnValues.bidder.substring(2,7).toUpperCase()}</td>
+                                      <td>{bid.returnValues.bid/1e18} ETH</td>
+                                    </tr>
+                                  ))}
+                              </tbody>
+                            </Table>
+                            ) : (
+                              <div>
+                                <div className="priceHistoryGraph">
+                                  <img src={emptyAsks} />
+                                </div>
+                                <div className="noOrdersText">
+                                  No listings yet
+                                </div>
+                              </div>
+                            )}
+                         </div>   
                         </div>
                       </div>
                     </div>
@@ -577,7 +578,7 @@ function NFTDescription({ wallet }) {
                 )}
               </div>
             </div>
-            <div className="itemFrame">
+            {/* <div className="itemFrame">
               <div className="basePanel">
                 <button
                   className="basePanelHeader"
@@ -605,7 +606,7 @@ function NFTDescription({ wallet }) {
                   </div>
                 )}
               </div>
-            </div>
+            </div> */}
           </Col>
         </Row>
         <Row>
