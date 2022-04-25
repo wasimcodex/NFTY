@@ -1,5 +1,6 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { Link, useParams } from 'react-router-dom'
 import {
   Container,
   Image,
@@ -8,44 +9,51 @@ import {
   Table
 } from 'react-bootstrap';
 import eth from '../assets/eth.svg'
+import moment from 'moment'
 import { connectWallet, getWalletStatus } from '../utils/walletFunctions'
+import { getAllNftTransactionHistory } from '../utils/nftFunctions'
 import connectedArt from '../assets/connected-art.jpg'
 import notConnetedArt from '../assets/not-connected.png'
 import Explore from './Explore';
-  
-function Profile({ setStatus, setConnected, setWallet }) {
+
+const axios = require('axios')
+
+const getNftData = async (contractAddress, tokenId) => {
+  const data = await axios
+    .get(
+      `https://testnets-api.opensea.io/api/v1/asset/${contractAddress}/${tokenId}`,
+    )
+    .then((res) => {
+      return res.data
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  return data
+}
+
+const getTnxs = async (contractAddress, tokenId) => {
+  const data = await getAllNftTransactionHistory(contractAddress, tokenId)
+  return data
+}
+
+function Profile({ wallet }) {
   const [key, setKey] = useState('nfts');
-  var dummyAddress = '0x02ffdde0e9ad2999fd222c487410fd79aca8a8dd'
-  // const [walletAddress, setWalletAddress] = useState('')
-
-  // const handleConnect = async () => {
-  //   const walletResponse = await connectWallet()
-  //   setStatus(walletResponse.status)
-  //   setConnected(walletResponse.connected)
-  //   setWalletAddress(walletResponse.address)
-  //   setWallet(walletResponse.address)
-  // }
-
-  // useEffect(() => {
-  //   const checkWalletStatus = async () => {
-  //     const walletResponse = await getWalletStatus()
-  //     setStatus(walletResponse.status)
-  //     setConnected(walletResponse.connected)
-  //     setWalletAddress(walletResponse.address)
-  //     setWallet(walletResponse.address)
-  //   }
-
-  //   const walletListener = () => {
-  //     if (window.ethereum) {
-  //       window.ethereum.on('accountsChanged', (accounts) => {
-  //         checkWalletStatus()
-  //       })
-  //     }
-  //   }
-
-  //   checkWalletStatus()
-  //   walletListener()
-  // }, [setConnected, setStatus, setWallet])
+  let { contractAddress, tokenId } = useParams()
+  const [NFT, setNFT] = useState({})
+  const [txnHistory, setTxnHistory] = useState([])
+  var dummyAddress = window.ethereum.selectedAddress
+  useEffect(() => {
+    async function getNft() {
+      const nft = await getNftData(contractAddress, tokenId)
+      const txnHistory = await getTnxs(contractAddress, tokenId)
+      setNFT(nft)
+      console.log(nft)
+      setTxnHistory(txnHistory)
+      console.log(txnHistory)
+    }
+    getNft()
+  }, [])
 
   return (
     <div>
@@ -83,7 +91,7 @@ function Profile({ setStatus, setConnected, setWallet }) {
           >
               <Tab eventKey="nfts" title="My NFTs">
                 <div style={{ borderBottom: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', borderLeft: '1px solid #dee2e6'}}>
-                  <Explore />
+                  <Explore owner={wallet} />
                 </div>
               </Tab>
               <Tab eventKey="activity" title="NFT Activity" style={{ borderBottom: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', borderLeft: '1px solid #dee2e6'}}>
@@ -92,7 +100,7 @@ function Profile({ setStatus, setConnected, setWallet }) {
                     <thead>
                       <tr>
                         <th>Event</th>
-                        <th>Item</th>
+                        <th>Item ID</th>
                         <th>Price</th>
                         <th>From</th>
                         <th>To</th>
@@ -100,14 +108,17 @@ function Profile({ setStatus, setConnected, setWallet }) {
                       </tr>                    
                     </thead>
                     <tbody style={{ borderTop: '1px solid #dee2e6' }}>
-                      <tr>
-                        <td>Minted</td>
-                        <td>NFT 1</td>
-                        <td>---</td>
-                        <td>Me</td>
-                        <td>NA</td>
-                        <td>Today</td>
-                      </tr>
+                      {txnHistory &&
+                          txnHistory.map((txn, i) => (
+                            <tr key={i}>
+                              <td>{txn.from == 0 ? 'Minted' : 'Transfer'}</td>
+                              <td>{txn.tokenId}</td>
+                              <td>0.01</td>
+                              <td>{txn.from.substring(2, 7).toUpperCase()}</td>
+                              <td>{txn.to.substring(2, 7).toUpperCase()}</td>
+                              <td>{moment(txn.timeStamp * 1000).fromNow()}</td>
+                            </tr>
+                          ))}
                     </tbody>
                   </Table>                
                 </div>
