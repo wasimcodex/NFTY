@@ -130,7 +130,7 @@ const BankInfo = ({ onAccoutChange }) => {
             </Button>
             <Button
               className="withdraw-btn"
-              variant="warning"
+              variant="danger"
               onClick={handleShowWithdraw}
             >
               Withdraw
@@ -142,6 +142,14 @@ const BankInfo = ({ onAccoutChange }) => {
               onClick={handleShowTransfer}
             >
               Transfer
+            </Button>
+
+            <Button
+              className="loan-btn"
+              variant="warning"
+              href={`/applyloan`}
+            >
+              Apply for Loan
             </Button>
           </div>
         )}
