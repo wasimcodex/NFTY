@@ -21,7 +21,7 @@ import LoanDetails from './LoanDetails'
 function ApplyLoan({ wallet }) {
   const [key, setKey] = useState('apply')
   const [modalShow, setModalShow] = useState(false)
-  console.log('wallet: ', wallet)
+  const [selectedNFT, setSelectedNFT] = useState({})
   return (
     <div>
       <Container>
@@ -208,7 +208,10 @@ function ApplyLoan({ wallet }) {
                     <div className="sellOptions">
                       <div>
                         <Card>
-                          <Card.Img variant="bottom" src={imagePlaceholder} />
+                          <Card.Img
+                            variant="bottom"
+                            src={selectedNFT.image_url || imagePlaceholder}
+                          />
                           <Card.Body>
                             <div
                               style={{
@@ -235,7 +238,7 @@ function ApplyLoan({ wallet }) {
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <h3>NFT Collection</h3>
                 </div>
-                <Explore owner={wallet} />
+                <Explore owner={wallet} selectNFT={setSelectedNFT} />
               </div>
             </Tab>
 

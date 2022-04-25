@@ -29,7 +29,7 @@ const getNFTs = async (owner) => {
   return data
 }
 
-export default function Explore({ owner }) {
+export default function Explore({ owner, selectNFT }) {
   const [NFTs, setNFTs] = useState([])
   useEffect(() => {
     async function getNfts() {
@@ -47,7 +47,7 @@ export default function Explore({ owner }) {
           <Row xs={1} md={3} className="g-4">
             {NFTs.map((nft, index) => (
               <Col key={index}>
-                <NftCards nft={nft} key={index} />
+                <NftCards nft={nft} selectNFT={selectNFT} key={index} />
               </Col>
             ))}
           </Row>
