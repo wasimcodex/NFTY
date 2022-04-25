@@ -134,15 +134,6 @@ function SellNFT({ wallet }) {
               </div>
             </div>
             <div className='sellOptions'>
-              <p className='text'>Fees</p>
-              <div classsName='options'>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span>Service Fee</span>
-                  <span>2.5%</span>
-                </div>
-              </div>
-            </div>
-            <div className='sellOptions'>
               <div className="mb-2">
                 <Button variant="primary" size="lg" onClick={auctionCreate}>Complete Listing</Button>
               </div>
