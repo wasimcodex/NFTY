@@ -3,15 +3,23 @@ import eth from '../assets/eth.svg'
 import { Row, Col, Card, Container } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
-const NftCards = ({ nft }) => {
+const NftCards = ({ nft, selectNFT }) => {
   const index = 1
   return (
     <Link
       className="nav-link"
-      to={`/nft/${nft.asset_contract.address}/${nft.token_id}`}
+      to={
+        selectNFT ? '#' : `/nft/${nft.asset_contract.address}/${nft.token_id}`
+      }
       nft={nft}
     >
-      <Card>
+      <Card
+        onClick={() => {
+          if (selectNFT) {
+            selectNFT(nft)
+          }
+        }}
+      >
         <Card.Img className="cardImg" variant="top" src={nft.image_url} />
         <Card.Body>
           <Container style={{ padding: '0px' }}>

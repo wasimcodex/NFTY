@@ -12,7 +12,7 @@ const { abi, address } = require('../artifacts/nft-contract.json')
 export const getNftTransactionHistory = async (address, tokenId) => {
   console.log(alchemyKey, etherscanApi)
   const url = `https://api-rinkeby.etherscan.io/api?module=account&action=tokennfttx&contractaddress=${address}&sort=desc&apikey=${etherscanApi}`
-  console.log(url)
+  // console.log(url)
   const data = await axios.get(
     `https://api-rinkeby.etherscan.io/api?module=account&action=tokennfttx&contractaddress=${address}&sort=desc&apikey=${etherscanApi}`,
   )
@@ -25,21 +25,23 @@ export const getNftTransactionHistory = async (address, tokenId) => {
 export const transferNft = async (recipient, id) => {
   window.contract = await new web3.eth.Contract(abi, address)
   const txParams = {
-      to: address,
-      from: window.ethereum.selectedAddress,
-      data: window.contract.methods.transferFrom(window.ethereum.selectedAddress, recipient, id).encodeABI(),
+    to: address,
+    from: window.ethereum.selectedAddress,
+    data: window.contract.methods
+      .transferFrom(window.ethereum.selectedAddress, recipient, id)
+      .encodeABI(),
+  }
+  try {
+    await window.ethereum.request({
+      method: 'eth_sendTransaction',
+      params: [txParams, 'latest'],
+    })
+    return {
+      status: 'Transaction Successful. Refresh in a moment.',
     }
-    try {
-      await window.ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [txParams, 'latest'],
-      })
-      return {
-        status: 'Transaction Successful. Refresh in a moment.',
-      }
-    } catch (error) {
-      return {
-        status: 'Transaction Failed' + error.message,
-      }
+  } catch (error) {
+    return {
+      status: 'Transaction Failed' + error.message,
     }
+  }
 }
