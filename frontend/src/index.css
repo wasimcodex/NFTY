@@ -67,13 +67,15 @@ code {
 }
 
 .withdraw-btn,
+.transfer-btn,
 .close-btn {
   margin-left: 20px;
   margin-right: 20px;
 }
 
-.transfer-btn {
+.loan-btn {
   margin-left: 20px;
+  
 }
 
 .connect-btn {
