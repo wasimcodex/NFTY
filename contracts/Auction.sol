@@ -28,11 +28,11 @@ contract NFTAuction {
     }
 
     event AuctionCreated(address auctionContract, uint256 auctionId, uint256 minPrice, uint256 buyNowPrice, uint256 auctionEndTimestamp);
-    event AuctionEnded(address auctionContract, uint256 auctionId, address highestBidder, uint256 highestBid);
-    event AuctionCancelled(address auctionContract, uint256 auctionId);
-    event AuctionBid(address auctionContract, uint256 auctionId, address bidder, uint256 bid);
-    event AuctionUnsuccessful(address auctionContract, uint256 auctionId);
-    event BidWithdrawn(address auctionContract, uint256 auctionId, address bidder, uint256 bid);
+    event AuctionEnded(address auctionContract, uint256 auctionId, address highestBidder, uint256 highestBid, uint256 timestamp);
+    event AuctionCancelled(address auctionContract, uint256 auctionId, uint256 timestamp);
+    event AuctionBid(address auctionContract, uint256 auctionId, address bidder, uint256 bid, uint256 timestamp);
+    event AuctionUnsuccessful(address auctionContract, uint256 auctionId, uint256 timestamp);
+    event BidWithdrawn(address auctionContract, uint256 auctionId, address bidder, uint256 bid, uint256 timestamp);
 
     modifier isOwner(address nftContractAddress, uint256 tokenId){
         require(IERC721(nftContractAddress).ownerOf(tokenId) == msg.sender, "Sender doesn't own NFT");
@@ -57,7 +57,7 @@ contract NFTAuction {
         require(nftContractAuctions[nftContractAddress][tokenId].seller != msg.sender, "Seller can't bid on his own auction");
         nftContractAuctions[nftContractAddress][tokenId].bids[msg.sender] = msg.value;
         nftContractAuctions[nftContractAddress][tokenId].bidders.push(msg.sender);
-        emit AuctionBid(nftContractAddress, tokenId, msg.sender, msg.value);
+        emit AuctionBid(nftContractAddress, tokenId, msg.sender, msg.value, block.timestamp);
         if(msg.value > nftContractAuctions[nftContractAddress][tokenId].highestBid){
             nftContractAuctions[nftContractAddress][tokenId].highestBid = msg.value;
             nftContractAuctions[nftContractAddress][tokenId].highestBidder = msg.sender;
@@ -70,7 +70,7 @@ contract NFTAuction {
     function withdrawBid(address nftContractAddress, uint256 tokenId) public {
         require(nftContractAuctions[nftContractAddress][tokenId].bids[msg.sender] > 0, "No bids made yet");
         payable(msg.sender).transfer(nftContractAuctions[nftContractAddress][tokenId].bids[msg.sender]);
-        emit BidWithdrawn(nftContractAddress, tokenId, msg.sender, nftContractAuctions[nftContractAddress][tokenId].bids[msg.sender]);
+        emit BidWithdrawn(nftContractAddress, tokenId, msg.sender, nftContractAuctions[nftContractAddress][tokenId].bids[msg.sender], block.timestamp);
         nftContractAuctions[nftContractAddress][tokenId].bids[msg.sender] = 0;
         if (nftContractAuctions[nftContractAddress][tokenId].highestBidder == msg.sender){
             updateHighestBid(nftContractAddress, tokenId);
@@ -116,11 +116,11 @@ function setApplicant(address applicant, address nftContractAddress, uint256 tok
             }
             address buyer = nftContractAuctions[nftContractAddress][tokenId].highestBidder;
             nftContractAuctions[nftContractAddress][tokenId].bids[buyer] = 0;
+            emit AuctionEnded(nftContractAddress, tokenId, buyer, nftContractAuctions[nftContractAddress][tokenId].highestBid, block.timestamp);
             payOutRest(nftContractAddress, tokenId);
             resetAuction(nftContractAddress, tokenId);
-            emit AuctionEnded(nftContractAddress, tokenId, buyer, nftContractAuctions[nftContractAddress][tokenId].highestBid);
         }else{
-            emit AuctionUnsuccessful(nftContractAddress, tokenId);
+            emit AuctionUnsuccessful(nftContractAddress, tokenId, block.timestamp);
         }
     }
 
@@ -128,7 +128,7 @@ function setApplicant(address applicant, address nftContractAddress, uint256 tok
         require(nftContractAuctions[nftContractAddress][tokenId].seller == msg.sender, "Only seller can cancel auction");
         payOutRest(nftContractAddress, tokenId);
         resetAuction(nftContractAddress, tokenId);
-        emit AuctionCancelled(nftContractAddress, tokenId);
+        emit AuctionCancelled(nftContractAddress, tokenId, block.timestamp);
     }
 
     function payOutRest(address nftContractAddress, uint256 tokenId) internal {

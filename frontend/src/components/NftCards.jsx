@@ -3,6 +3,10 @@ import eth from '../assets/eth.svg'
 import { Row, Col, Card, Container } from 'react-bootstrap'
 import { Link } from 'react-router-dom'
 
+const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
+const { createAlchemyWeb3 } = require('@alch/alchemy-web3')
+const web3 = createAlchemyWeb3(alchemyKey)
+
 const NftCards = ({ nft, selectNFT }) => {
   const index = 1
   return (
@@ -31,7 +35,7 @@ const NftCards = ({ nft, selectNFT }) => {
                 </Card.Title>
                 <Card.Text style={{ fontSize: '16px', color: 'grey' }}>
                   {nft.description.length > 100
-                    ? nft.description.substring(0, 100) + '...'
+                    ? nft.description.substring(0, 40) + '...'
                     : nft.description}
                 </Card.Text>
               </Col>
@@ -42,7 +46,9 @@ const NftCards = ({ nft, selectNFT }) => {
                     style={{ height: '20px', marginRight: '5px' }}
                     src={eth}
                   ></img>
-                  0.01
+                  {nft.price !== undefined
+                    ? (parseInt(nft.price) / 1000000000000000000).toFixed(4)
+                    : '0'}
                 </p>
               </Col>
             </Row>

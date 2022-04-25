@@ -15,7 +15,13 @@ import { Link, useParams } from 'react-router-dom'
 
 import { getNftTransactionHistory } from '../utils/nftFunctions'
 
-import { auctionCancel, getAuction, withdrawAuctionBid } from '../utils/auctionFunctions'
+import {
+  auctionCancel,
+  getAuction,
+  withdrawAuctionBid,
+} from '../utils/auctionFunctions'
+
+import { address, abi } from '../artifacts/auction.json'
 
 import {
   FaAlignJustify,
@@ -39,6 +45,10 @@ import { exchangeRate } from '../utils/bankFunctions'
 
 const axios = require('axios')
 
+const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
+const { createAlchemyWeb3 } = require('@alch/alchemy-web3')
+const web3 = createAlchemyWeb3(alchemyKey)
+
 const getNftData = async (contractAddress, tokenId) => {
   const data = await axios
     .get(
@@ -51,6 +61,21 @@ const getNftData = async (contractAddress, tokenId) => {
       console.log(err)
     })
   return data
+}
+
+const getNFTLatestPrice = async (tokenId) => {
+  window.contract = await new web3.eth.Contract(abi, address)
+  const allEvents = await window.contract.getPastEvents('allEvents', {
+    fromBlock: 0,
+    toBlock: 'latest',
+  })
+  var events = []
+  for (var i = 0; i < allEvents.length; i++) {
+    if (allEvents[i].returnValues.auctionId == tokenId) {
+      events.push(allEvents[i])
+    }
+  }
+  return events
 }
 
 const getTnxs = async (contractAddress, tokenId) => {
@@ -78,8 +103,10 @@ function NFTDescription({ wallet }) {
     async function getNft() {
       const nft = await getNftData(contractAddress, tokenId)
       const txnHistory = await getTnxs(contractAddress, tokenId)
+      const getEvents = await getNFTLatestPrice(tokenId)
       setNFT(nft)
       console.log(nft)
+      console.log(getEvents)
       setTxnHistory(txnHistory)
       const actionDetails = await getAuction(contractAddress, tokenId)
       console.log(actionDetails)
@@ -88,9 +115,9 @@ function NFTDescription({ wallet }) {
       setExhRate(rate)
     }
     getNft().then(() => {
-      setBuyNowINR(((auction.buyNowPrice / 1000000000000000000) / exhRate))
-      setMinPriceINR(((auction.minPrice / 1000000000000000000) / exhRate))
-      setHighestBidINR(((auction.highestBid / 1000000000000000000) / exhRate))
+      setBuyNowINR(auction.buyNowPrice / 1000000000000000000 / exhRate)
+      setMinPriceINR(auction.minPrice / 1000000000000000000 / exhRate)
+      setHighestBidINR(auction.highestBid / 1000000000000000000 / exhRate)
     })
   }, [])
 
@@ -111,19 +138,17 @@ function NFTDescription({ wallet }) {
                 <div>
                   {auction.highestBid > 0 ? (
                     <Button
-                    variant="outline-primary"
-                    size="lg"
-                    style={{ marginRight: '20px' }}
+                      variant="outline-primary"
+                      size="lg"
+                      style={{ marginRight: '20px' }}
                     >
-                    Take Highest Bid
-                    </Button>) : (<></>)
-                    }
-                  
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    onClick={withdrawAuction}
-                  >
+                      Take Highest Bid
+                    </Button>
+                  ) : (
+                    <></>
+                  )}
+
+                  <Button variant="primary" size="lg" onClick={withdrawAuction}>
                     Cancel Auction
                   </Button>
                 </div>
@@ -240,27 +265,29 @@ function NFTDescription({ wallet }) {
                 {NFT.owner ? (
                   wallet == NFT.owner.address ? (
                     auction.minPrice == 0 ? (
-                    <div className="itemCollectionToolbarWrapper">
-                      <div className="buttonGrp">
-                        <Link
-                          to={`/nft/transfer/${contractAddress}/${tokenId}`}
-                        >
-                          <FaGift
-                            style={{
-                              fontSize: '25px',
-                              color: 'rgb(53, 56, 64)',
-                            }}
-                          />
-                        </Link>
+                      <div className="itemCollectionToolbarWrapper">
+                        <div className="buttonGrp">
+                          <Link
+                            to={`/nft/transfer/${contractAddress}/${tokenId}`}
+                          >
+                            <FaGift
+                              style={{
+                                fontSize: '25px',
+                                color: 'rgb(53, 56, 64)',
+                              }}
+                            />
+                          </Link>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <></>
+                    )
                   ) : (
                     <></>
                   )
                 ) : (
                   <></>
-                ))
-              :(<></>)}
+                )}
               </div>
               <h1 className="itemTitle">{NFT.name}</h1>
             </section>
@@ -273,9 +300,9 @@ function NFTDescription({ wallet }) {
                       ? wallet == NFT.owner.address
                         ? 'You'
                         : `${NFT.owner.address.slice(
-                          0,
-                          6,
-                        )}...${NFT.owner.address.slice(38)}`
+                            0,
+                            6,
+                          )}...${NFT.owner.address.slice(38)}`
                       : 'Unknown'}
                   </span>
                 </a>
@@ -297,7 +324,18 @@ function NFTDescription({ wallet }) {
                         <FaClock />
                         <span style={{ marginLeft: '15px', fontWeight: '400' }}>
                           Sale Ends on{' '}
-                          {new Date(auction.auctionEndTimestamp * 1000).getDate() + '/' + (new Date(auction.auctionEndTimestamp * 1000).getMonth() + 1) + '/' + new Date(auction.auctionEndTimestamp * 1000).getFullYear()}
+                          {new Date(
+                            auction.auctionEndTimestamp * 1000,
+                          ).getDate() +
+                            '/' +
+                            (new Date(
+                              auction.auctionEndTimestamp * 1000,
+                            ).getMonth() +
+                              1) +
+                            '/' +
+                            new Date(
+                              auction.auctionEndTimestamp * 1000,
+                            ).getFullYear()}
                         </span>
                       </span>
                     </div>
@@ -458,7 +496,6 @@ function NFTDescription({ wallet }) {
                                   show={buyNowModalShow}
                                   onHide={() => setBuyNowModalShow(false)}
                                 />
-
                               </div>
                             </div>
                           )}

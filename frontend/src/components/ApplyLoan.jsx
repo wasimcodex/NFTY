@@ -18,10 +18,61 @@ import eth from '../assets/eth.svg'
 import LoanConfirmModal from './LoanConfirmModal'
 import LoanDetails from './LoanDetails'
 
+import { applyBankLoan } from '../utils/bankFunctions'
+import { approveNft } from '../utils/nftApprove'
+
+import { address } from '../artifacts/bank.json'
+
 function ApplyLoan({ wallet }) {
   const [key, setKey] = useState('apply')
   const [modalShow, setModalShow] = useState(false)
+  const [loanAmount, setLoanAmount] = useState('')
+  const [loanAmountETH, setLoanAmountETH] = useState('')
+  const [exchangeRate, setExchangeRate] = useState('')
+  const [interestRate, setInterestRate] = useState(10)
+  const [months, setMonths] = useState(6)
   const [selectedNFT, setSelectedNFT] = useState({})
+
+  const getExchangeRate = async () => {
+    const response = await fetch(
+      'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=inr',
+    )
+    const data = await response.json()
+    return data.ethereum.inr
+  }
+
+  const handleLoanAmountChange = (e) => {
+    setLoanAmount(e.target.value)
+    setLoanAmountETH(e.target.value / exchangeRate)
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    const approve = await approveNft(address, selectedNFT.token_id)
+    applyBankLoan(
+      selectedNFT.asset_contract.address,
+      selectedNFT.token_id,
+      loanAmountETH.toString(),
+      months,
+      (loanAmountETH + loanAmountETH * (interestRate / 100)).toString(),
+      (
+        ((loanAmountETH + loanAmountETH * (interestRate / 100)) / months) *
+        exchangeRate
+      ).toFixed(0),
+      ((loanAmountETH + loanAmountETH * (interestRate / 100)) / months)
+        .toFixed(18)
+        .toString(),
+    )
+  }
+
+  useEffect((selectedNFT) => {
+    const saveExchangeRate = async () => {
+      const exchangeRate = await getExchangeRate()
+      setExchangeRate(exchangeRate)
+    }
+    saveExchangeRate()
+  }, [])
+
   return (
     <div>
       <Container>
@@ -61,6 +112,8 @@ function ApplyLoan({ wallet }) {
                           <Form.Control
                             type="number"
                             placeholder="Enter Loan Amount in INR"
+                            onChange={(e) => handleLoanAmountChange(e)}
+                            value={loanAmount}
                           />
                         </Col>
                       </Form.Group>
@@ -78,6 +131,7 @@ function ApplyLoan({ wallet }) {
                             type="number"
                             placeholder="Loan Amount in ETH"
                             readOnly
+                            value={loanAmountETH}
                           />
                         </Col>
                       </Form.Group>
@@ -94,14 +148,23 @@ function ApplyLoan({ wallet }) {
                           <Form.Check
                             inline
                             label="6 Months"
+                            defaultChecked
                             type="radio"
                             name="duration"
+                            onChange={(e) => {
+                              setMonths(6)
+                              setInterestRate(10)
+                            }}
                           />
                           <Form.Check
                             inline
                             label="12 Months"
                             type="radio"
                             name="duration"
+                            onChange={(e) => {
+                              setMonths(12)
+                              setInterestRate(15)
+                            }}
                           />
                         </Col>
                       </Form.Group>
@@ -121,6 +184,15 @@ function ApplyLoan({ wallet }) {
                                 placeholder="Amount in ETH"
                                 type="number"
                                 readOnly
+                                value={
+                                  selectedNFT.price
+                                    ? (
+                                        (selectedNFT.price /
+                                          1000000000000000000) *
+                                        0.8
+                                      ).toFixed(4)
+                                    : ''
+                                }
                               />
                               <InputGroup.Text>ETH</InputGroup.Text>
                             </InputGroup>
@@ -131,6 +203,16 @@ function ApplyLoan({ wallet }) {
                                 placeholder="Amount in INR"
                                 type="number"
                                 readOnly
+                                value={
+                                  selectedNFT.price
+                                    ? (
+                                        (selectedNFT.price /
+                                          1000000000000000000) *
+                                        exchangeRate *
+                                        0.8
+                                      ).toFixed(2)
+                                    : ''
+                                }
                               />
                               <InputGroup.Text>INR</InputGroup.Text>
                             </InputGroup>
@@ -152,6 +234,7 @@ function ApplyLoan({ wallet }) {
                               type="number"
                               placeholder="Interest rate"
                               readOnly
+                              value={interestRate}
                             />
                             <InputGroup.Text>p.c.p.a.</InputGroup.Text>
                           </InputGroup>
@@ -173,6 +256,11 @@ function ApplyLoan({ wallet }) {
                                 placeholder="Amount in ETH"
                                 type="number"
                                 readOnly
+                                value={(
+                                  (loanAmountETH +
+                                    loanAmountETH * (interestRate / 100)) /
+                                  months
+                                ).toPrecision(4)}
                               />
                               <InputGroup.Text>ETH</InputGroup.Text>
                             </InputGroup>
@@ -183,6 +271,12 @@ function ApplyLoan({ wallet }) {
                                 placeholder="Amount in INR"
                                 type="number"
                                 readOnly
+                                value={(
+                                  ((loanAmountETH +
+                                    loanAmountETH * (interestRate / 100)) /
+                                    months) *
+                                  exchangeRate
+                                ).toFixed(2)}
                               />
                               <InputGroup.Text>INR</InputGroup.Text>
                             </InputGroup>
@@ -192,7 +286,7 @@ function ApplyLoan({ wallet }) {
 
                       <Button
                         variant="primary"
-                        onClick={() => setModalShow(true)}
+                        onClick={(e) => handleSubmit(e)}
                       >
                         Apply
                       </Button>
@@ -219,13 +313,21 @@ function ApplyLoan({ wallet }) {
                                 justifyContent: 'space-between',
                               }}
                             >
-                              <Card.Subtitle>Name</Card.Subtitle>
+                              <Card.Subtitle>
+                                {selectedNFT.name || 'Name'}
+                              </Card.Subtitle>
                               <Card.Subtitle>
                                 <img
                                   style={{ height: '20px', marginRight: '5px' }}
                                   src={eth}
                                 ></img>
-                                <strong>0.5</strong>
+                                <strong>
+                                  {selectedNFT.price
+                                    ? (
+                                        selectedNFT.price / 1000000000000000000
+                                      ).toFixed(4)
+                                    : '0.00'}
+                                </strong>
                               </Card.Subtitle>
                             </div>
                           </Card.Body>
