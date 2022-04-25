@@ -19,6 +19,20 @@ export const getNftTransactionHistory = async (address, tokenId) => {
   const txs = data.data.result.filter((tx) => {
     return tx.tokenID === tokenId
   })
+  console.log(txs)
+  return txs
+}
+
+export const getAllNftTransactionHistory = async (address, tokenId) => {
+  console.log(alchemyKey, etherscanApi)
+  const url = `https://api-rinkeby.etherscan.io/api?module=account&action=tokennfttx&contractaddress=${address}&sort=desc&apikey=${etherscanApi}`
+  // console.log(url)
+  const data = await axios.get(
+    `https://api-rinkeby.etherscan.io/api?module=account&action=tokennfttx&contractaddress=${address}&sort=desc&apikey=${etherscanApi}`,
+  )
+  const txs = data.data.result.filter((tx) => {
+    return (tx.to === window.ethereum.selectedAddress || tx.from === window.ethereum.selectedAddress)
+  })
   return txs
 }
 
