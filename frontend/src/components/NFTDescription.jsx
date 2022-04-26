@@ -326,9 +326,9 @@ function NFTDescription({ wallet }) {
                       ? wallet == NFT.owner.address
                         ? 'You'
                         : `${NFT.owner.address.slice(
-                            0,
-                            6,
-                          )}...${NFT.owner.address.slice(38)}`
+                          0,
+                          6,
+                        )}...${NFT.owner.address.slice(38)}`
                       : 'Unknown'}
                   </span>
                 </a>
@@ -349,8 +349,8 @@ function NFTDescription({ wallet }) {
                       <span>
                         <FaClock />
                         <span style={{ marginLeft: '15px', fontWeight: '400' }}>
-                          Sale Ends on{' '}
-                          {new Date(
+                          Sale Ends on 30-04-2022
+                          {/* {new Date(
                             auction.auctionEndTimestamp * 1000,
                           ).getDate() +
                             '/' +
@@ -361,7 +361,7 @@ function NFTDescription({ wallet }) {
                             '/' +
                             new Date(
                               auction.auctionEndTimestamp * 1000,
-                            ).getFullYear()}
+                            ).getFullYear()} */}
                         </span>
                       </span>
                     </div>
@@ -530,39 +530,9 @@ function NFTDescription({ wallet }) {
                     </div>
                   </div>
                 </div>
+
               </section>
             )}
-            <div className="itemFrame">
-              <div className="basePanel">
-                <button
-                  className="basePanelHeader"
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                  onClick={() => setPriceHistor(!showPriceHistory)}
-                >
-                  <span>
-                    <FaChartLine />
-                    <span style={{ marginLeft: '15px' }}>Price History</span>
-                  </span>
-                  {showPriceHistory ? <FaAngleUp /> : <FaAngleDown />}
-                </button>
-                {showPriceHistory && (
-                  <div className="basePanelBody">
-                    <div className="panelContainer">
-                      <div className="panelContent">
-                        <div className="priceHistoryContainer">
-                          <div className="priceHistoryGraph">
-                            <img src={noChartData} />
-                          </div>
-                          <div className="noOrdersText">
-                            No item activity yet
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
             <div className="itemFrame">
               <div className="basePanel">
                 <button
@@ -624,6 +594,44 @@ function NFTDescription({ wallet }) {
                 )}
               </div>
             </div>
+            <div className="itemFrame" style={{ padding: '12px', margin: '0' }}>
+              <div className="basePanel">
+                <button className="basePanelHeader">
+                  <FaExchangeAlt />
+                  <span style={{ marginLeft: '15px' }}>Item Activity</span>
+                </button>
+                <div className="basePanelBody">
+                  <div className="panelContainer">
+                    <div className="panelContent">
+                      <Table responsive borderless>
+                        <thead>
+                          <tr>
+                            <th>Event</th>
+
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Date</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {txnHistory &&
+                            txnHistory.map((txn, i) => (
+                              <tr key={i}>
+                                <td>{txn.from == 0 ? 'Minted' : 'Transfer'}</td>
+
+                                <td>{txn.from.substring(2, 7).toUpperCase()}</td>
+                                <td>{txn.to.substring(2, 7).toUpperCase()}</td>
+                                <td>{moment(txn.timeStamp * 1000).fromNow()}</td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </Table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* <div className="itemFrame">
               <div className="basePanel">
                 <button
@@ -656,43 +664,7 @@ function NFTDescription({ wallet }) {
           </Col>
         </Row>
         <Row>
-          <div className="itemFrame" style={{ padding: '12px', margin: '0' }}>
-            <div className="basePanel">
-              <button className="basePanelHeader">
-                <FaExchangeAlt />
-                <span style={{ marginLeft: '15px' }}>Item Activity</span>
-              </button>
-              <div className="basePanelBody">
-                <div className="panelContainer">
-                  <div className="panelContent">
-                    <Table responsive borderless>
-                      <thead>
-                        <tr>
-                          <th>Event</th>
-                          <th>Price</th>
-                          <th>From</th>
-                          <th>To</th>
-                          <th>Date</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {txnHistory &&
-                          txnHistory.map((txn, i) => (
-                            <tr key={i}>
-                              <td>{txn.from == 0 ? 'Minted' : 'Transfer'}</td>
-                              <td>0.01</td>
-                              <td>{txn.from.substring(2, 7).toUpperCase()}</td>
-                              <td>{txn.to.substring(2, 7).toUpperCase()}</td>
-                              <td>{moment(txn.timeStamp * 1000).fromNow()}</td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </Table>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+
         </Row>
       </Container>
     </div>
