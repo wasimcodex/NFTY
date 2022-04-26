@@ -13,8 +13,52 @@ import { FaExchangeAlt, FaInfoCircle, FaAlignJustify, FaAngleDown } from 'react-
 import imagePlaceholder from '../assets/image-placeholder.png';
 import eth from '../assets/eth.svg';
 
-function LoanDetails() {
+import { repayLoanAmountFromAccount, loanEMIAccount } from '../utils/bankFunctions';
+
+const axios = require('axios')
+
+
+const getNftData = async (contractAddress, tokenId) => {
+  const data = await axios
+    .get(
+      `https://testnets-api.opensea.io/api/v1/asset/${contractAddress}/${tokenId}`,
+    )
+    .then((res) => {
+      return res.data
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  return data
+}
+
+const repayLoan = async (amount) => {
+  const data = await repayLoanAmountFromAccount(amount)
+  return data
+}
+
+const payEmi = async (amount) => { 
+  const data = await loanEMIAccount(amount)
+  return data
+}
+
+
+function LoanDetails({ loan }) {
+  const [nftData, setNftData] = useState(null)
   const [showDetails, setDetails] = useState(false)
+  useEffect(() => { 
+    const getData = async () => {
+      if (loan) {
+        console.log(loan)
+        getNftData(loan.nftContractAddress, loan.tokenId)
+          .then((data) => {
+            console.log(data)
+            setNftData(data)
+          })
+      }
+    }
+    getData()
+  }, [loan])
   return (
     <div>
       <Container>
@@ -32,10 +76,7 @@ function LoanDetails() {
                             style={{ height: '20px', marginRight: '5px' }}
                             src={eth}
                           />
-                        <strong>0.5</strong>
-                      </div>
-                      <div style={{ marginLeft: '10px', color: 'rgb(112, 122, 131)', fontWeight: 'normal'}}>
-                        (100000 INR)
+                        <strong>{ loan ? (loan.repay_amount / 1000000000000000000).toFixed(4)  : ''}</strong>
                       </div>
                     </div>
                   </Col>
@@ -49,10 +90,7 @@ function LoanDetails() {
                             style={{ height: '20px', marginRight: '5px' }}
                             src={eth}
                           />
-                        <strong>0.25</strong>
-                      </div>
-                      <div style={{ marginLeft: '10px', color: 'rgb(112, 122, 131)', fontWeight: 'normal'}}>
-                        (50000 INR)
+                        <strong>{loan ? (loan.balance_amount / 1000000000000000000).toFixed(4) : ''}</strong>
                       </div>
                     </div>
                   </Col>
@@ -60,57 +98,40 @@ function LoanDetails() {
                 <Row className='text' style={{ marginBottom: '1.25%', fontSize: '17px'}}>
                   <Col>Total number of EMIs</Col>
                   <Col>
-                    6
+                    {loan ? loan.due : ''}
                   </Col>
                 </Row>
                 <Row className='text' style={{ marginBottom: '1.25%', fontSize: '17px'}}>
                   <Col>EMIs to be paid</Col>
                   <Col>
-                    3
+                    {loan ? parseInt(loan.balance_amount / loan.emi) + 1: ''}
                   </Col>
                 </Row>
                 <Row className='text' style={{ marginBottom: '1.25%', fontSize: '17px'}}>
                   <Col>Interest Rate</Col>
                   <Col>
-                    12 p.c.p.a
+                    10 p.c.p.a
                   </Col>
                 </Row>
               </div>
               <div style={{ marginTop: '20px'}}>
-                <div style={{ fontWeight: '600', color: 'rgb(4, 17, 29)', fontSize: '18px', marginBottom: '10px'}}>Payment Methods</div>
-                <Form>
-                  <Form.Group as={Row} className="mb-3" controlId="paymentoptions">
-                    <Col>
-                      <Form.Check
-                        inline
-                        label="Using Wallet"
-                        type="radio"
-                        name="options"
-                      />
-                      <Form.Check
-                        inline
-                        label="Using Bank Account"
-                        type="radio"
-                        name="options"
-                      />
-                    </Col> 
-                  </Form.Group>
                   <div style={{display: 'flex', marginTop: '20px'}}>
                   <Button 
                     variant="primary"
+                    onClick={() => { payEmi((loan.emi / 1000000000000000000).toFixed(4).toString())}}
                   >
                     Pay EMI
                   </Button>
                     <Button 
                       style={{ marginLeft: '2%' }}
-                      variant="outline-primary" 
+                    variant="outline-primary" 
+                    onClick={() => repayLoan((loan.balance_amount / 1000000000000000000).toFixed(4).toString())}
                     >
                       Repay Loan
                     </Button>
                   </div>
-                </Form>
               </div>
-              <div className="itemFrame" style={{ margin: '20px 0'}}>
+              {/* <div className="itemFrame" style={{ margin: '20px 0'}}>
                 <div className="basePanel">
                   <button className="basePanelHeader">
                     <FaExchangeAlt />
@@ -142,7 +163,7 @@ function LoanDetails() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>            
           </Col>
           <Col lg={4} sm={12}>
@@ -150,16 +171,11 @@ function LoanDetails() {
             <div className="itemSummary">
               <div>
                 <Card>
-                  <Card.Img variant="bottom" src={imagePlaceholder} />
+                  <Card.Img variant="bottom" src={nftData ? nftData.image_url : imagePlaceholder} />
                   <Card.Body>
                     <div style={{display: 'flex',justifyContent: 'space-between'}}>
                       <Card.Subtitle>Name</Card.Subtitle>
                       <Card.Subtitle>
-                        <img
-                          style={{ height: '20px', marginRight: '5px' }}
-                          src={eth}
-                        ></img>
-                        <strong>0.5</strong>
                       </Card.Subtitle>
                     </div>  
                   </Card.Body>

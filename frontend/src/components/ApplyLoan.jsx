@@ -21,7 +21,30 @@ import LoanDetails from './LoanDetails'
 import { applyBankLoan } from '../utils/bankFunctions'
 import { approveNft } from '../utils/nftApprove'
 
-import { address } from '../artifacts/bank.json'
+const { address, abi } = require('../artifacts/bank.json')
+
+const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
+const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
+const web3 = createAlchemyWeb3(alchemyKey);
+
+const getloanDetails = async (wallet) => {
+  window.contract = await new web3.eth.Contract(abi, address)
+  const loan = await window.contract.methods.Loan(wallet).call()
+  console.log('loan')
+  console.log(loan)
+  return loan
+}
+
+const getAllEvents = async () => {
+  window.contract = await new web3.eth.Contract(abi, address)
+  const allEvents = await window.contract.getPastEvents('allEvents', {
+    fromBlock: 0,
+    toBlock: 'latest',
+  })
+  console.log(allEvents)
+  return allEvents
+}
+
 
 function ApplyLoan({ wallet }) {
   const [key, setKey] = useState('apply')
@@ -32,6 +55,7 @@ function ApplyLoan({ wallet }) {
   const [interestRate, setInterestRate] = useState(10)
   const [months, setMonths] = useState(6)
   const [selectedNFT, setSelectedNFT] = useState({})
+  const [loanDetails, setLoanDetails] = useState({})
 
   const getExchangeRate = async () => {
     const response = await fetch(
@@ -65,13 +89,19 @@ function ApplyLoan({ wallet }) {
     )
   }
 
-  useEffect((selectedNFT) => {
+  useEffect(() => {
     const saveExchangeRate = async () => {
       const exchangeRate = await getExchangeRate()
       setExchangeRate(exchangeRate)
+      console.log(wallet)
+      if (wallet) {
+        const loan = await getloanDetails(wallet)
+        setLoanDetails(loan)
+      }
+      const events = await getAllEvents()
     }
     saveExchangeRate()
-  }, [])
+  }, [wallet])
 
   return (
     <div>
@@ -353,7 +383,7 @@ function ApplyLoan({ wallet }) {
                   padding: '10px',
                 }}
               >
-                <LoanDetails />
+                <LoanDetails loan={loanDetails}/>
               </div>
             </Tab>
           </Tabs>

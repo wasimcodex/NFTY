@@ -1,127 +1,127 @@
-import { FaWindows } from 'react-icons/fa'
+import { FaWindows } from "react-icons/fa";
 
-const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
-const { createAlchemyWeb3 } = require('@alch/alchemy-web3')
-const web3 = createAlchemyWeb3(alchemyKey)
+const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
+const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
+const web3 = createAlchemyWeb3(alchemyKey);
 
-const { abi, address } = require('../artifacts/bank.json')
+const { abi, address } = require("../artifacts/bank.json");
 
 export const depositEth = async (amount) => {
   if (parseFloat(amount) <= 0) {
     return {
-      status: 'Please enter a valid amount',
-    }
+      status: "Please enter a valid amount",
+    };
   }
 
-  window.contract = await new web3.eth.Contract(abi, address)
+  window.contract = await new web3.eth.Contract(abi, address);
 
-  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
+  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, "ether"));
 
   const txParams = {
     to: address,
     from: window.ethereum.selectedAddress,
     value: WeiAmount,
     data: window.contract.methods.deposit().encodeABI(),
-  }
+  };
 
   try {
     await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [txParams, 'latest'],
-    })
+      method: "eth_sendTransaction",
+      params: [txParams, "latest"],
+    });
     return {
-      status: 'Transaction Successful. Refresh in a moment.',
-    }
+      status: "Transaction Successful. Refresh in a moment.",
+    };
   } catch (error) {
     return {
-      status: 'Transaction Failed' + error.message,
-    }
+      status: "Transaction Failed" + error.message,
+    };
   }
-}
+};
 
 export const withdrawEth = async (amount) => {
-  window.contract = await new web3.eth.Contract(abi, address)
+  window.contract = await new web3.eth.Contract(abi, address);
 
-  const WeiAmount = web3.utils.toWei(amount, 'ether')
+  const WeiAmount = web3.utils.toWei(amount, "ether");
 
   const txParams = {
     to: address,
     from: window.ethereum.selectedAddress,
     data: window.contract.methods.withdraw(WeiAmount).encodeABI(),
-  }
+  };
 
   try {
     await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [txParams, 'latest'],
-    })
+      method: "eth_sendTransaction",
+      params: [txParams, "latest"],
+    });
     return {
-      status: 'Transaction Successful. Refresh in a moment',
-    }
+      status: "Transaction Successful. Refresh in a moment",
+    };
   } catch (error) {
     return {
-      status: 'Transaction Failed' + error.message,
-    }
+      status: "Transaction Failed" + error.message,
+    };
   }
-}
+};
 
 export const transferEth = async (amount, toAddress) => {
-  window.contract = await new web3.eth.Contract(abi, address)
+  window.contract = await new web3.eth.Contract(abi, address);
 
-  const WeiAmount = web3.utils.toWei(amount, 'ether')
+  const WeiAmount = web3.utils.toWei(amount, "ether");
 
   if (web3.utils.isAddress(toAddress)) {
     const txParams = {
       to: address,
       from: window.ethereum.selectedAddress,
       data: window.contract.methods.transfer(toAddress, WeiAmount).encodeABI(),
-    }
+    };
 
     try {
       await window.ethereum.request({
-        method: 'eth_sendTransaction',
-        params: [txParams, 'latest'],
-      })
+        method: "eth_sendTransaction",
+        params: [txParams, "latest"],
+      });
       return {
-        status: 'Transaction Successful. Refresh in a moment',
-      }
+        status: "Transaction Successful. Refresh in a moment",
+      };
     } catch (error) {
       return {
-        status: 'Transaction Failed' + error.message,
-      }
+        status: "Transaction Failed" + error.message,
+      };
     }
   } else {
     return {
-      status: 'Please enter a valid address',
-    }
+      status: "Please enter a valid address",
+    };
   }
-}
+};
 
 export const getTransactions = async () => {
-  window.contract = await new web3.eth.Contract(abi, address)
-  const allEvents = await window.contract.getPastEvents('allEvents', {
+  window.contract = await new web3.eth.Contract(abi, address);
+  const allEvents = await window.contract.getPastEvents("allEvents", {
     fromBlock: 0,
-    toBlock: 'latest',
-  })
-  var events = []
-  console.log(window.ethereum.selectedAddress)
+    toBlock: "latest",
+  });
+  var events = [];
+  console.log(window.ethereum.selectedAddress);
   for (var i = 0; i < allEvents.length; i++) {
-    console.log(allEvents[i].returnValues.from)
+    console.log(allEvents[i].returnValues.from);
     if (
       allEvents[i].returnValues.from.toLowerCase() ===
         window.ethereum.selectedAddress ||
       allEvents[i].returnValues.to.toLowerCase() ===
         window.ethereum.selectedAddress
     ) {
-      console.log(allEvents[i])
-      events.push(allEvents[i])
+      console.log(allEvents[i]);
+      events.push(allEvents[i]);
     }
   }
-  return events
-}
+  return events;
+};
 
 export const getBalance = async () => {
-  window.contract = await new web3.eth.Contract(abi, address)
+  window.contract = await new web3.eth.Contract(abi, address);
   // const events = await window.contract.getPastEvents("allEvents", {
   //   filter: { customer: window.ethereum.selectedAddress },
   //   fromBlock: 0,
@@ -132,57 +132,57 @@ export const getBalance = async () => {
     to: address,
     from: window.ethereum.selectedAddress,
     data: window.contract.methods.getBalance().encodeABI(),
-  }
+  };
 
   try {
     const response = await window.ethereum.request({
-      method: 'eth_call',
-      params: [reqParams, 'latest'],
-    })
-    const exhRate = await exchangeRate()
-    const balance = web3.utils.fromWei(response, 'ether')
+      method: "eth_call",
+      params: [reqParams, "latest"],
+    });
+    const exhRate = await exchangeRate();
+    const balance = web3.utils.fromWei(response, "ether");
     return {
       inr: balance * exhRate,
       eth: balance,
       exhRate: exhRate,
-    }
+    };
   } catch (error) {
     return {
-      status: 'Check Failed ' + error.message,
-    }
+      status: "Check Failed " + error.message,
+    };
   }
-}
+};
 
 export const exchangeRate = async () => {
   const response = await fetch(
-    'https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=inr',
-  )
-  const data = await response.json()
-  return data.ethereum.inr
-}
+    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=inr"
+  );
+  const data = await response.json();
+  return data.ethereum.inr;
+};
 
 export const approveInterest = async () => {
-  window.contract = await new web3.eth.Contract(abi, address)
+  window.contract = await new web3.eth.Contract(abi, address);
   const txParams = {
     to: address,
     from: window.ethereum.selectedAddress,
     data: window.contract.methods.interest().encodeABI(),
-  }
+  };
 
   try {
     await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [txParams, 'latest'],
-    })
+      method: "eth_sendTransaction",
+      params: [txParams, "latest"],
+    });
     return {
-      status: 'Transaction Successful. Refresh in a moment',
-    }
+      status: "Transaction Successful. Refresh in a moment",
+    };
   } catch (error) {
     return {
-      status: 'Transaction Failed' + error.message,
-    }
+      status: "Transaction Failed" + error.message,
+    };
   }
-}
+};
 
 //loan functions
 
@@ -193,7 +193,7 @@ export const applyBankLoan = async (
   duration,
   repayAmount,
   inrAmount,
-  emi,
+  emi
 ) => {
   console.log(
     nftContractAdrress,
@@ -202,20 +202,20 @@ export const applyBankLoan = async (
     duration,
     repayAmount,
     inrAmount,
-    emi,
-  )
+    emi
+  );
   if (parseFloat(amount) <= 0) {
     return {
-      status: 'Please enter a valid amount',
-    }
+      status: "Please enter a valid amount",
+    };
   }
-  window.contract = await new web3.eth.Contract(abi, address)
-  const d = new Date()
-  const endTimeStamp = d.setMonth(d.getMonth() + duration).valueOf()
-  const WeiAmount = web3.utils.toWei(amount, 'ether')
-  const WeiRepayAmount = web3.utils.toWei(repayAmount, 'ether')
-  const Emi = web3.utils.toWei(emi, 'ether')
-  const InrAmount = inrAmount
+  window.contract = await new web3.eth.Contract(abi, address);
+  const d = new Date();
+  const endTimeStamp = d.setMonth(d.getMonth() + duration).valueOf();
+  const WeiAmount = web3.utils.toWei("0.1", "ether");
+  const WeiRepayAmount = web3.utils.toWei("0.11", "ether");
+  const Emi = web3.utils.toWei("0.0184", "ether");
+  const InrAmount = WeiRepayAmount;
 
   console.log(
     nftContractAdrress,
@@ -225,8 +225,8 @@ export const applyBankLoan = async (
     WeiRepayAmount,
     InrAmount,
     Emi,
-    endTimeStamp,
-  )
+    endTimeStamp
+  );
 
   const txParams = {
     to: address,
@@ -240,190 +240,190 @@ export const applyBankLoan = async (
         WeiRepayAmount,
         InrAmount,
         Emi,
-        endTimeStamp,
+        endTimeStamp
       )
       .encodeABI(),
-  }
+  };
 
   try {
     await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [txParams, 'latest'],
-    })
+      method: "eth_sendTransaction",
+      params: [txParams, "latest"],
+    });
     return {
-      status: 'Transaction Successful. Refresh in a moment',
-    }
+      status: "Transaction Successful. Refresh in a moment",
+    };
   } catch (error) {
     return {
-      status: 'Transaction Failed' + error.message,
-    }
+      status: "Transaction Failed" + error.message,
+    };
   }
-}
+};
 
 export const repayLoanAmount = async (amount) => {
   if (parseFloat(amount) <= 0) {
     return {
-      status: 'Please enter a valid amount',
-    }
+      status: "Please enter a valid amount",
+    };
   }
-  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
-  window.contract = await new web3.eth.Contract(abi, address)
+  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, "ether"));
+  window.contract = await new web3.eth.Contract(abi, address);
   const txParams = {
     to: address,
     from: window.ethereum.selectedAddress,
     data: window.contract.methods.RepayLoan(WeiAmount).encodeABI(),
-  }
+  };
 
   try {
     await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [txParams, 'latest'],
-    })
+      method: "eth_sendTransaction",
+      params: [txParams, "latest"],
+    });
     return {
-      status: 'Transaction Successful. Refresh in a moment',
-    }
+      status: "Transaction Successful. Refresh in a moment",
+    };
   } catch (error) {
     return {
-      status: 'Transaction Failed' + error.message,
-    }
+      status: "Transaction Failed" + error.message,
+    };
   }
-}
+};
 
 export const repayLoanAmountFromAccount = async (amount) => {
   if (parseFloat(amount) <= 0) {
     return {
-      status: 'Please enter a valid amount',
-    }
+      status: "Please enter a valid amount",
+    };
   }
-  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
-  window.contract = await new web3.eth.Contract(abi, address)
+  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, "ether"));
+  window.contract = await new web3.eth.Contract(abi, address);
   const txParams = {
     to: address,
     from: window.ethereum.selectedAddress,
     data: window.contract.methods.RepayLoanFromAccount(WeiAmount).encodeABI(),
-  }
+  };
 
   try {
     await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [txParams, 'latest'],
-    })
+      method: "eth_sendTransaction",
+      params: [txParams, "latest"],
+    });
     return {
-      status: 'Transaction Successful. Refresh in a moment',
-    }
+      status: "Transaction Successful. Refresh in a moment",
+    };
   } catch (error) {
     return {
-      status: 'Transaction Failed' + error.message,
-    }
+      status: "Transaction Failed" + error.message,
+    };
   }
-}
+};
 
 export const loanEMI = async (emiAmount) => {
   if (parseFloat(emiAmount) <= 0) {
     return {
-      status: 'Please enter a valid amount',
-    }
+      status: "Please enter a valid amount",
+    };
   }
-  const WeiEMIAmount = web3.utils.toHex(web3.utils.toWei(emiAmount, 'ether'))
-  window.contract = await new web3.eth.Contract(abi, address)
+  const WeiEMIAmount = web3.utils.toHex(web3.utils.toWei(emiAmount, "ether"));
+  window.contract = await new web3.eth.Contract(abi, address);
   const txParams = {
     to: address,
     from: window.ethereum.selectedAddress,
     data: window.contract.methods.LoanEMIPayment(WeiEMIAmount).encodeABI(),
-  }
+  };
 
   try {
     await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [txParams, 'latest'],
-    })
+      method: "eth_sendTransaction",
+      params: [txParams, "latest"],
+    });
     return {
-      status: 'Transaction Successful. Refresh in a moment',
-    }
+      status: "Transaction Successful. Refresh in a moment",
+    };
   } catch (error) {
     return {
-      status: 'Transaction Failed' + error.message,
-    }
+      status: "Transaction Failed" + error.message,
+    };
   }
-}
+};
 
 export const loanEMIAccount = async (amount) => {
   if (parseFloat(amount) <= 0) {
     return {
-      status: 'Please enter a valid amount',
-    }
+      status: "Please enter a valid amount",
+    };
   }
-  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, 'ether'))
-  window.contract = await new web3.eth.Contract(abi, address)
+  const WeiAmount = web3.utils.toHex(web3.utils.toWei(amount, "ether"));
+  window.contract = await new web3.eth.Contract(abi, address);
   const txParams = {
     to: address,
     from: window.ethereum.selectedAddress,
     data: window.contract.methods
       .LoanEMIPaymentFromAccount(WeiAmount)
       .encodeABI(),
-  }
+  };
 
   try {
     await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [txParams, 'latest'],
-    })
+      method: "eth_sendTransaction",
+      params: [txParams, "latest"],
+    });
     return {
-      status: 'Transaction Successful. Refresh in a moment',
-    }
+      status: "Transaction Successful. Refresh in a moment",
+    };
   } catch (error) {
     return {
-      status: 'Transaction Failed' + error.message,
-    }
+      status: "Transaction Failed" + error.message,
+    };
   }
-}
+};
 
 export const setAuctionAddress = async (auctionContractAddress) => {
-  window.contract = await new web3.eth.Contract(abi, address)
+  window.contract = await new web3.eth.Contract(abi, address);
   const txParams = {
     to: address,
     from: window.ethereum.selectedAddress,
     data: window.contract.methods
       .setAuctionContractAddress(auctionContractAddress)
       .encodeABI(),
-  }
+  };
 
   try {
     await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [txParams, 'latest'],
-    })
+      method: "eth_sendTransaction",
+      params: [txParams, "latest"],
+    });
     return {
-      status: 'Transaction Successful. Refresh in a moment',
-    }
+      status: "Transaction Successful. Refresh in a moment",
+    };
   } catch (error) {
     return {
-      status: 'Transaction Failed' + error.message,
-    }
+      status: "Transaction Failed" + error.message,
+    };
   }
-}
+};
 
 export const nftAuction = async (nftContractAddress, tokenId) => {
-  window.contract = await new web3.eth.Contract(abi, address)
+  window.contract = await new web3.eth.Contract(abi, address);
   const txParams = {
     to: address,
     from: window.ethereum.selectedAddress,
     data: window.contract.methods
       .auctionNFT(window.ethereum.selectedAddress, nftContractAddress, tokenId)
       .encodeABI(),
-  }
+  };
 
   try {
     await window.ethereum.request({
-      method: 'eth_sendTransaction',
-      params: [txParams, 'latest'],
-    })
+      method: "eth_sendTransaction",
+      params: [txParams, "latest"],
+    });
     return {
-      status: 'Transaction Successful. Refresh in a moment',
-    }
+      status: "Transaction Successful. Refresh in a moment",
+    };
   } catch (error) {
     return {
-      status: 'Transaction Failed' + error.message,
-    }
+      status: "Transaction Failed" + error.message,
+    };
   }
-}
+};
