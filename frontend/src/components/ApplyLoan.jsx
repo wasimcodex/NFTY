@@ -73,7 +73,7 @@ function ApplyLoan({ wallet }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     const approve = await approveNft(address, selectedNFT.token_id)
-    applyBankLoan(
+    const applyLoan = applyBankLoan(
       selectedNFT.asset_contract.address,
       selectedNFT.token_id,
       loanAmountETH.toString(),

@@ -1,19 +1,30 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React from 'react'
+import { useState, useEffect } from 'react'
+import { Button, Container, Col, Form, Card, Row, Table } from 'react-bootstrap'
 import {
-  Button,
-  Container,
-  Col,
-  Form,
-  Card,
-  Row,
-  Table,
-} from 'react-bootstrap';
-import { FaExchangeAlt, FaInfoCircle, FaAlignJustify, FaAngleDown } from 'react-icons/fa';
-import imagePlaceholder from '../assets/image-placeholder.png';
-import eth from '../assets/eth.svg';
+  FaExchangeAlt,
+  FaInfoCircle,
+  FaAlignJustify,
+  FaAngleDown,
+} from 'react-icons/fa'
+import imagePlaceholder from '../assets/image-placeholder.png'
+import eth from '../assets/eth.svg'
 
 import { repayLoanAmountFromAccount, loanEMIAccount } from '../utils/bankFunctions';
+
+const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY
+const { createAlchemyWeb3 } = require('@alch/alchemy-web3')
+const web3 = createAlchemyWeb3(alchemyKey)
+
+const { address, abi } = require('../artifacts/bank.json')
+
+const getloanDetails = async (address) => {
+  window.contract = await new web3.eth.Contract(abi, address)
+  const loan = await window.contract.methods.Loan(address).call()
+  console.log('loan')
+  console.log(loan)
+  return loan
+}
 
 const axios = require('axios')
 
@@ -65,12 +76,15 @@ function LoanDetails({ loan }) {
         <Row>
           <Col lg={8} sm={12}>
             <div>
-              <h1 className='heading'>Loan Details</h1>
+              <h1 className="heading">Loan Details</h1>
               <div>
-                <Row className='text' style={{ marginBottom: '1.25%', fontSize: '17px'}}>
+                <Row
+                  className="text"
+                  style={{ marginBottom: '1.25%', fontSize: '17px' }}
+                >
                   <Col>Total Loan Amount</Col>
                   <Col>
-                    <div style={{ display: 'flex'}}>
+                    <div style={{ display: 'flex' }}>
                       <div>
                         <img
                             style={{ height: '20px', marginRight: '5px' }}
@@ -81,10 +95,13 @@ function LoanDetails({ loan }) {
                     </div>
                   </Col>
                 </Row>
-                <Row className='text' style={{ marginBottom: '1.25%', fontSize: '17px'}}>
+                <Row
+                  className="text"
+                  style={{ marginBottom: '1.25%', fontSize: '17px' }}
+                >
                   <Col>Amount to be paid</Col>
                   <Col>
-                    <div style={{ display: 'flex'}}>
+                    <div style={{ display: 'flex' }}>
                       <div>
                         <img
                             style={{ height: '20px', marginRight: '5px' }}
@@ -95,19 +112,28 @@ function LoanDetails({ loan }) {
                     </div>
                   </Col>
                 </Row>
-                <Row className='text' style={{ marginBottom: '1.25%', fontSize: '17px'}}>
+                <Row
+                  className="text"
+                  style={{ marginBottom: '1.25%', fontSize: '17px' }}
+                >
                   <Col>Total number of EMIs</Col>
                   <Col>
                     {loan ? loan.due : ''}
                   </Col>
                 </Row>
-                <Row className='text' style={{ marginBottom: '1.25%', fontSize: '17px'}}>
+                <Row
+                  className="text"
+                  style={{ marginBottom: '1.25%', fontSize: '17px' }}
+                >
                   <Col>EMIs to be paid</Col>
                   <Col>
                     {loan ? parseInt(loan.balance_amount / loan.emi) + 1: ''}
                   </Col>
                 </Row>
-                <Row className='text' style={{ marginBottom: '1.25%', fontSize: '17px'}}>
+                <Row
+                  className="text"
+                  style={{ marginBottom: '1.25%', fontSize: '17px' }}
+                >
                   <Col>Interest Rate</Col>
                   <Col>
                     10 p.c.p.a
@@ -150,13 +176,12 @@ function LoanDetails({ loan }) {
                             </tr>
                           </thead>
                           <tbody>
-
-                                <tr>
-                                  <td>02/02/2022</td>
-                                  <td>4000 INR</td>
-                                  <td>12000 INR</td>
-                                  <td>Bank Balance</td>
-                                </tr>
+                            <tr>
+                              <td>02/02/2022</td>
+                              <td>4000 INR</td>
+                              <td>12000 INR</td>
+                              <td>Bank Balance</td>
+                            </tr>
                           </tbody>
                         </Table>
                       </div>
@@ -167,17 +192,22 @@ function LoanDetails({ loan }) {
             </div>            
           </Col>
           <Col lg={4} sm={12}>
-            <div className='sideHeading'>NFT Preview</div>
+            <div className="sideHeading">NFT Preview</div>
             <div className="itemSummary">
               <div>
                 <Card>
                   <Card.Img variant="bottom" src={nftData ? nftData.image_url : imagePlaceholder} />
                   <Card.Body>
-                    <div style={{display: 'flex',justifyContent: 'space-between'}}>
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                      }}
+                    >
                       <Card.Subtitle>Name</Card.Subtitle>
                       <Card.Subtitle>
                       </Card.Subtitle>
-                    </div>  
+                    </div>
                   </Card.Body>
                 </Card>
               </div>
@@ -222,9 +252,7 @@ function LoanDetails({ loan }) {
                             }}
                           >
                             <span>Contract Address</span>
-                            <span>
-                              09fbfherbf334
-                            </span>
+                            <span>09fbfherbf334</span>
                           </div>
                           <div
                             style={{
