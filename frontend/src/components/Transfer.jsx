@@ -40,6 +40,7 @@ const Transfer = () => {
       const nft = await getNftData(contractAddress, tokenId)
       // console.log(nft)
       setNFT(nft)
+      console.log(NFT)
     }
     getNft()
   }, [])
@@ -55,7 +56,7 @@ const Transfer = () => {
       <img
         style={{ alignContent: 'center', margin: 'auto', display: 'block' }}
         className="cardImg"
-        src={imgplaceholder}
+        src={NFT.image_url ? NFT.image_url : imgplaceholder}
         alt="placeholder"
       />
       <Container>

@@ -105,13 +105,13 @@ export const getTransactions = async () => {
   });
   var events = [];
   console.log(window.ethereum.selectedAddress);
+  console.log(allEvents);
   for (var i = 0; i < allEvents.length; i++) {
     console.log(allEvents[i].returnValues.from);
+    var event = "" + allEvents[i].returnValues.from;
     if (
-      allEvents[i].returnValues.from.toLowerCase() ===
-        window.ethereum.selectedAddress ||
-      allEvents[i].returnValues.to.toLowerCase() ===
-        window.ethereum.selectedAddress
+      event.toLowerCase() == window.ethereum.selectedAddress ||
+      event.toLowerCase() == window.ethereum.selectedAddress
     ) {
       console.log(allEvents[i]);
       events.push(allEvents[i]);
