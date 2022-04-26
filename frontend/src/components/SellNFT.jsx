@@ -149,13 +149,13 @@ function SellNFT({ wallet }) {
                   <Card.Body>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <Card.Subtitle>{NFT.name}</Card.Subtitle>
-                      <Card.Subtitle>
+                      {/* <Card.Subtitle>
                         <img
                           style={{ height: '20px', marginRight: '5px' }}
                           src={eth}
                         ></img>
                         <strong>0.5</strong>
-                      </Card.Subtitle>
+                      </Card.Subtitle> */}
                     </div>
                   </Card.Body>
                 </Card>
