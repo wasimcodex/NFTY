@@ -212,10 +212,10 @@ export const applyBankLoan = async (
   window.contract = await new web3.eth.Contract(abi, address)
   const d = new Date()
   const endTimeStamp = d.setMonth(d.getMonth() + duration).valueOf()
-  const WeiAmount = web3.utils.toWei(amount, 'ether')
-  const WeiRepayAmount = web3.utils.toWei(repayAmount, 'ether')
-  const Emi = web3.utils.toWei(emi, 'ether')
-  const InrAmount = inrAmount
+  const WeiAmount = web3.utils.toWei('0.1', 'ether')
+  const WeiRepayAmount = web3.utils.toWei('0.18', 'ether')
+  const Emi = web3.utils.toWei('0.03', 'ether')
+  const InrAmount = '50000000'
 
   console.log(
     nftContractAdrress,

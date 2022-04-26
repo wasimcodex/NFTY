@@ -412,5 +412,11 @@ contract Bank {
             block.timestamp
         );
     }
+
+    function getLoanStatus(address applicant) public view returns (bool) {
+        return (
+            Loan[applicant].exists 
+            );
+    }
 }
 //--------------------------Loan code Ends Here------------------------------//
