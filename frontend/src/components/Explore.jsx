@@ -61,7 +61,7 @@ const mapPriceToNft = async (nfts, auctionEndEvents) => {
       }
     }
   }
-  return nfts
+  return nfts.filter((nft) => nft.image_url != null)
 }
 
 export default function Explore({ owner, selectNFT }) {
