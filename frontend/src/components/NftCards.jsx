@@ -9,6 +9,7 @@ const web3 = createAlchemyWeb3(alchemyKey)
 
 const NftCards = ({ nft, selectNFT }) => {
   const index = 1
+  console.log(nft)
   return (
     <Link
       className="nav-link"
@@ -34,7 +35,7 @@ const NftCards = ({ nft, selectNFT }) => {
                   <span style={{ color: 'magenta' }}>{'#' + nft.token_id}</span>
                 </Card.Title>
                 <Card.Text style={{ fontSize: '16px', color: 'grey' }}>
-                  {nft.description.length > 100
+                  {nft.description != null && nft.description.length > 100
                     ? nft.description.substring(0, 40) + '...'
                     : nft.description}
                 </Card.Text>
